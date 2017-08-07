@@ -44,8 +44,11 @@ namespace SharePointBot.Dialogs
                     var authResultAwaited = await authResult;
 
                     // Use token to call into service
-                    var json = await new HttpClient().GetWithAuthAsync(authResultAwaited.AccessToken, "https://graph.microsoft.com/v1.0/me");
-                    await authContext.PostAsync($"I'm a simple bot that doesn't do much, but I know your name is {json.Value<string>("displayName")} and your UPN is {json.Value<string>("userPrincipalName")}");
+                    var json = await new HttpClient().GetWithAuthAsync(authResultAwaited.AccessToken, "https://graph.microsoft.com/beta/sites/lee79.sharepoint.com:/sites/dev:/lists");
+                    //await authContext.PostAsync($"I'm a simple bot that doesn't do much, but I know your name is {json.Value<string>("displayName")} and your UPN is {json.Value<string>("userPrincipalName")}");
+
+                    await authContext.PostAsync("Made the call OK.");
+
                 }, message, CancellationToken.None);
             }
             else
