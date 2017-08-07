@@ -4,21 +4,36 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Connector;
+using Autofac;
+using Microsoft.Bot.Builder.Internals.Fibers;
+using Microsoft.Bot.Builder.Dialogs.Internals;
+using System.Threading;
 
 namespace SharePointBot
 {
     [BotAuthentication]
     public class MessagesController : ApiController
     {
+        private readonly ILifetimeScope scope;
+
+        public MessagesController(ILifetimeScope scope)
+        {
+            SetField.NotNull(out this.scope, nameof(scope), scope);
+        }
+
         /// <summary>
         /// POST: api/Messages
         /// Receive a message from a user and reply to it
         /// </summary>
-        public async Task<HttpResponseMessage> Post([FromBody]Activity activity)
+        public async Task<HttpResponseMessage> Post([FromBody]Activity activity, CancellationToken token)
         {
             if (activity.Type == ActivityTypes.Message)
             {
-                await Conversation.SendAsync(activity, () => new Dialogs.RootDialog());
+                using (var scope = DialogModule.BeginLifetimeScope(this.scope, activity))
+                {
+                    var postToBot = scope.Resolve<IPostToBot>();
+                    await postToBot.PostAsync(activity, token);
+                }
             }
             else
             {
