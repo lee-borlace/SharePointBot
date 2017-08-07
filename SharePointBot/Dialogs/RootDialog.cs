@@ -34,8 +34,8 @@ namespace SharePointBot.Dialogs
                 AuthenticationOptions options = new AuthenticationOptions()
                 {
                     Authority = ConfigurationManager.AppSettings["aad:Authority"],
-                    ClientId = ConfigurationManager.AppSettings["aad:ClientId"],
-                    ClientSecret = ConfigurationManager.AppSettings["aad:ClientSecret"],
+                    ClientId = ConfigurationManager.AppSettings["MicrosoftAppId"],
+                    ClientSecret = ConfigurationManager.AppSettings["MicrosoftAppPassword"],
                     Scopes = new string[] { "User.Read" },
                     RedirectUrl = ConfigurationManager.AppSettings["aad:Callback"]
                 };
