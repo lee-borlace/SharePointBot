@@ -7,14 +7,12 @@ namespace SharePointBot
 {
     public static class Constants
     {
-        public static class Commands
-        {
-            public const string LOGIN = "login";
-        }
-
         public static class UtteranceRegexes
         {
+            public const string LOGIN = @"\s*log\s*in\s*";
+            public const string LOGOUT = @"\s*log\s*out\s*";
         }
+      
 
         public static class Choices
         {

@@ -9,6 +9,7 @@ using BotAuth.AADv2;
 using System.Net.Http;
 using BotAuth;
 using System.Threading;
+using System.Text.RegularExpressions;
 
 namespace SharePointBot.Dialogs
 {
@@ -28,7 +29,8 @@ namespace SharePointBot.Dialogs
             var activity = await result as Activity;
             var userToBot = activity.Text.ToLowerInvariant();
 
-            if (userToBot.Trim().Equals(Constants.Commands.LOGIN, StringComparison.OrdinalIgnoreCase))
+            var match = Regex.Match(userToBot, Constants.UtteranceRegexes.LOGIN);
+            if (match.Success)
             {
                 // Initialize AuthenticationOptions and forward to AuthDialog for token
                 AuthenticationOptions options = new AuthenticationOptions()
