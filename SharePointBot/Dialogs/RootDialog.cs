@@ -38,7 +38,6 @@ namespace SharePointBot.Dialogs
             {
                 foundMatch = true;
                 await Login(context, message);
-                context.Wait(MessageReceivedAsync);
             }
 
             // Log out.
@@ -47,7 +46,6 @@ namespace SharePointBot.Dialogs
             {
                 foundMatch = true;
                 await LogOut(context);
-                context.Wait(MessageReceivedAsync);
             }
 
             if (!foundMatch)
