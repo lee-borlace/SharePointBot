@@ -38,7 +38,7 @@ namespace SharePointBot.Controllers
 
             // Show a message in the browser indicating logout is complete.
             var resp = new HttpResponseMessage(HttpStatusCode.OK);
-            resp.Content = new StringContent($"<html><body>You are now logged out of SharePoint.</body></html>", System.Text.Encoding.UTF8, @"text/html");
+            resp.Content = new StringContent($"<html><head><script type='text/javascript'>window.close();</script></head><body>You are now logged out of SharePoint. You can close this tab.</body></html>", System.Text.Encoding.UTF8, @"text/html");
             return resp;
         }
     }
