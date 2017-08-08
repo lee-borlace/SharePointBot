@@ -31,13 +31,14 @@ namespace SharePointBot.Dialogs
             var userToBot = activity.Text.ToLowerInvariant();
 
             var foundMatch = false;
-
+            
             // Log in.
             var match = Regex.Match(userToBot, Constants.UtteranceRegexes.LOGIN);
             if (match.Success)
             {
                 foundMatch = true;
                 await Login(context, message);
+                context.Wait(MessageReceivedAsync);
             }
 
             // Log out.
@@ -46,6 +47,7 @@ namespace SharePointBot.Dialogs
             {
                 foundMatch = true;
                 await LogOut(context);
+                context.Wait(MessageReceivedAsync);
             }
 
             if (!foundMatch)
@@ -54,7 +56,7 @@ namespace SharePointBot.Dialogs
             }
         }
 
-        private static async Task Login(IDialogContext context, object message)
+        private async Task Login(IDialogContext context, object message)
         {
             // Initialize AuthenticationOptions and forward to AuthDialog for token
             AuthenticationOptions options = new AuthenticationOptions()
@@ -73,11 +75,10 @@ namespace SharePointBot.Dialogs
                 // Use token to call into service
                 var json = await new HttpClient().GetWithAuthAsync(authResultAwaited.AccessToken, "https://graph.microsoft.com/beta/sites/lee79.sharepoint.com:/sites/dev:/lists");
                 await authContext.PostAsync("Made the call OK.");
-
             }, message, CancellationToken.None);
         }
 
-        private static async Task LogOut(IDialogContext context)
+        private async Task LogOut(IDialogContext context)
         {
             // We will store the conversation reference in the callback URL. When Office 365 logs out it will hit the LogOut endpoint and pass
             // that reference. That event signifies that log out has completed, and will prompt a message from the bot to the user to indicate that fact.
