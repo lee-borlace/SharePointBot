@@ -48,10 +48,27 @@ namespace SharePointBot.Dialogs
                 await LogOut(context);
             }
 
+            // Select site.
+            match = Regex.Match(userToBot, Constants.UtteranceRegexes.SELECT_SITE);
+            if (match.Success)
+            {
+                foundMatch = true;
+                context.Call(new SelectSiteDialog(), async (ctx, res) => {
+                    var dialogResult = await res;
+                    context.Wait(MessageReceivedAsync);
+                });
+            }
+
+
             if (!foundMatch)
             {
                 context.Wait(MessageReceivedAsync);
             }
+        }
+
+        private Task PostDialogHandler(IDialogContext context, IAwaitable<object> result)
+        {
+            throw new NotImplementedException();
         }
 
         private async Task Login(IDialogContext context, object message)

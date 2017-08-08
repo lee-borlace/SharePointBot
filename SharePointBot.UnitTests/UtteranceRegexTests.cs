@@ -85,8 +85,6 @@ namespace SharePointBot.UnitTests
 
         #endregion
 
-
-
         #region Log out
 
         const string CATEGORY_LOG_OUT = "Log out";
@@ -163,6 +161,73 @@ namespace SharePointBot.UnitTests
             Assert.IsTrue(result);
         }
 
+
+        #endregion
+
+        #region Select site
+
+        const string CATEGORY_SELECT_SITE = "Select site";
+
+        [TestMethod]
+        [TestCategory(CATEGORY_LOG_OUT)]
+        public void SelectSite_Match1()
+        {
+            var input = "select site";
+            var pattern = Constants.UtteranceRegexes.SELECT_SITE;
+
+            var result = Regex.IsMatch(input, pattern, RegexOptions.IgnoreCase);
+
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        [TestCategory(CATEGORY_LOG_OUT)]
+        public void SelectSite_Match2()
+        {
+            var input = "select website";
+            var pattern = Constants.UtteranceRegexes.SELECT_SITE;
+
+            var result = Regex.IsMatch(input, pattern, RegexOptions.IgnoreCase);
+
+            Assert.IsTrue(result);
+        }
+
+
+        [TestMethod]
+        [TestCategory(CATEGORY_LOG_OUT)]
+        public void SelectSite_Match3()
+        {
+            var input = "select web site";
+            var pattern = Constants.UtteranceRegexes.SELECT_SITE;
+
+            var result = Regex.IsMatch(input, pattern, RegexOptions.IgnoreCase);
+
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        [TestCategory(CATEGORY_LOG_OUT)]
+        public void SelectSite_Match4()
+        {
+            var input = "go to site";
+            var pattern = Constants.UtteranceRegexes.SELECT_SITE;
+
+            var result = Regex.IsMatch(input, pattern, RegexOptions.IgnoreCase);
+
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        [TestCategory(CATEGORY_LOG_OUT)]
+        public void SelectSite_Match5()
+        {
+            var input = "goto   site";
+            var pattern = Constants.UtteranceRegexes.SELECT_SITE;
+
+            var result = Regex.IsMatch(input, pattern, RegexOptions.IgnoreCase);
+
+            Assert.IsTrue(result);
+        }
 
         #endregion
     }
