@@ -10,6 +10,7 @@ using System.Net.Http;
 using BotAuth;
 using System.Threading;
 using System.Text.RegularExpressions;
+using Microsoft.Bot.Builder.ConnectorEx;
 
 namespace SharePointBot.Dialogs
 {
@@ -78,13 +79,17 @@ namespace SharePointBot.Dialogs
 
         private static async Task LogOut(IDialogContext context)
         {
+            // We will store the conversation reference in the callback URL. When Office 365 logs out it will hit the LogOut endpoint and pass
+            // that reference. That event signifies that log out has completed, and will prompt a message from the bot to the user to indicate that fact.
+            var conversationRef = context.Activity.ToConversationReference();
+
             AuthenticationOptions options = new AuthenticationOptions()
             {
                 Authority = ConfigurationManager.AppSettings["aad:Authority"],
                 ClientId = ConfigurationManager.AppSettings["MicrosoftAppId"],
                 ClientSecret = ConfigurationManager.AppSettings["MicrosoftAppPassword"],
                 Scopes = new string[] { "User.Read" },
-                RedirectUrl = ConfigurationManager.AppSettings["PostLogoutUrl"]
+                RedirectUrl = $"{ConfigurationManager.AppSettings["PostLogoutUrl"]}?conversationRef={UrlToken.Encode(conversationRef)}"
             };
 
             await new MSALAuthProvider().Logout(options, context);

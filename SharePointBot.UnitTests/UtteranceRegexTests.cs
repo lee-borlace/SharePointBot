@@ -59,6 +59,30 @@ namespace SharePointBot.UnitTests
             Assert.IsTrue(result);
         }
 
+        [TestMethod]
+        [TestCategory(CATEGORY_LOG_IN)]
+        public void LogIn_Match5()
+        {
+            var input = "sign   in";
+            var pattern = Constants.UtteranceRegexes.LOGIN;
+
+            var result = Regex.IsMatch(input, pattern, RegexOptions.IgnoreCase);
+
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        [TestCategory(CATEGORY_LOG_IN)]
+        public void LogIn_Match6()
+        {
+            var input = "signin";
+            var pattern = Constants.UtteranceRegexes.LOGIN;
+
+            var result = Regex.IsMatch(input, pattern, RegexOptions.IgnoreCase);
+
+            Assert.IsTrue(result);
+        }
+
         #endregion
 
 
@@ -114,6 +138,31 @@ namespace SharePointBot.UnitTests
 
             Assert.IsTrue(result);
         }
+
+        [TestMethod]
+        [TestCategory(CATEGORY_LOG_OUT)]
+        public void LogOut_Match5()
+        {
+            var input = "sign out";
+            var pattern = Constants.UtteranceRegexes.LOGOUT;
+
+            var result = Regex.IsMatch(input, pattern, RegexOptions.IgnoreCase);
+
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        [TestCategory(CATEGORY_LOG_OUT)]
+        public void LogOut_Match6()
+        {
+            var input = "signout";
+            var pattern = Constants.UtteranceRegexes.LOGOUT;
+
+            var result = Regex.IsMatch(input, pattern, RegexOptions.IgnoreCase);
+
+            Assert.IsTrue(result);
+        }
+
 
         #endregion
     }

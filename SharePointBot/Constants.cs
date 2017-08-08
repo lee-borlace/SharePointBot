@@ -9,8 +9,8 @@ namespace SharePointBot
     {
         public static class UtteranceRegexes
         {
-            public const string LOGIN = @"\s*log\s*in\s*";
-            public const string LOGOUT = @"\s*log\s*out\s*";
+            public const string LOGIN = @"\s*(log|sign)\s*in\s*";
+            public const string LOGOUT = @"\s*(log|sign)\s*out\s*";
         }
       
 
