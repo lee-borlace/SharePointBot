@@ -28,19 +28,22 @@ namespace SharePointBot
 
 #if DEBUG
 #else
+            // TODO : See issue #1 - when this is commented in, the the Callback controller in BotAuth fails to locate the previous conversation and cannot resume
 
-            var store = new TableBotDataStore(ConfigurationManager.AppSettings["StorageConnectionString"]);
-            builder.Register(c => store)
-                .Keyed<IBotDataStore<BotData>>(AzureModule.Key_DataStore)
-                .AsSelf()
-                .SingleInstance();
+            //builder.RegisterModule(new AzureModule(Assembly.GetExecutingAssembly()));
+
+            //var store = new TableBotDataStore(ConfigurationManager.AppSettings["StorageConnectionString"]);
+            //builder.Register(c => store)
+            //    .Keyed<IBotDataStore<BotData>>(AzureModule.Key_DataStore)
+            //    .AsSelf()
+            //    .SingleInstance();
 
 
-            builder.Register(c => new CachingBotDataStore(store,
-                                                          CachingBotDataStoreConsistencyPolicy.ETagBasedConsistency))
-                .As<IBotDataStore<BotData>>()
-                .AsSelf()
-                .InstancePerLifetimeScope();
+            //builder.Register(c => new CachingBotDataStore(store,
+            //                                              CachingBotDataStoreConsistencyPolicy.ETagBasedConsistency))
+            //    .As<IBotDataStore<BotData>>()
+            //    .AsSelf()
+            //    .InstancePerLifetimeScope();
 #endif
 
             builder.RegisterApiControllers(Assembly.GetExecutingAssembly());
