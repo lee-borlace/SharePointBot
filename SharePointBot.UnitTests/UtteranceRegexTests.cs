@@ -16,7 +16,7 @@ namespace SharePointBot.UnitTests
         public void LogIn_Match1()
         {
             var input = "log in";
-            var pattern = Constants.UtteranceRegexes.LOGIN;
+            var pattern = Constants.UtteranceRegexes.Login;
 
             var result = Regex.IsMatch(input, pattern, RegexOptions.IgnoreCase);
 
@@ -28,7 +28,7 @@ namespace SharePointBot.UnitTests
         public void LogIn_Match2()
         {
             var input = "login";
-            var pattern = Constants.UtteranceRegexes.LOGIN;
+            var pattern = Constants.UtteranceRegexes.Login;
 
             var result = Regex.IsMatch(input, pattern, RegexOptions.IgnoreCase);
 
@@ -40,7 +40,7 @@ namespace SharePointBot.UnitTests
         public void LogIn_Match3()
         {
             var input = "login please";
-            var pattern = Constants.UtteranceRegexes.LOGIN;
+            var pattern = Constants.UtteranceRegexes.Login;
 
             var result = Regex.IsMatch(input, pattern, RegexOptions.IgnoreCase);
 
@@ -52,7 +52,7 @@ namespace SharePointBot.UnitTests
         public void LogIn_Match4()
         {
             var input = "I'd like to login please";
-            var pattern = Constants.UtteranceRegexes.LOGIN;
+            var pattern = Constants.UtteranceRegexes.Login;
 
             var result = Regex.IsMatch(input, pattern, RegexOptions.IgnoreCase);
 
@@ -64,7 +64,7 @@ namespace SharePointBot.UnitTests
         public void LogIn_Match5()
         {
             var input = "sign   in";
-            var pattern = Constants.UtteranceRegexes.LOGIN;
+            var pattern = Constants.UtteranceRegexes.Login;
 
             var result = Regex.IsMatch(input, pattern, RegexOptions.IgnoreCase);
 
@@ -76,7 +76,7 @@ namespace SharePointBot.UnitTests
         public void LogIn_Match6()
         {
             var input = "signin";
-            var pattern = Constants.UtteranceRegexes.LOGIN;
+            var pattern = Constants.UtteranceRegexes.Login;
 
             var result = Regex.IsMatch(input, pattern, RegexOptions.IgnoreCase);
 
@@ -94,7 +94,7 @@ namespace SharePointBot.UnitTests
         public void LogOut_Match1()
         {
             var input = "log out";
-            var pattern = Constants.UtteranceRegexes.LOGOUT;
+            var pattern = Constants.UtteranceRegexes.LogOut;
 
             var result = Regex.IsMatch(input, pattern, RegexOptions.IgnoreCase);
 
@@ -106,7 +106,7 @@ namespace SharePointBot.UnitTests
         public void LogOut_Match2()
         {
             var input = "logout";
-            var pattern = Constants.UtteranceRegexes.LOGOUT;
+            var pattern = Constants.UtteranceRegexes.LogOut;
 
             var result = Regex.IsMatch(input, pattern, RegexOptions.IgnoreCase);
 
@@ -118,7 +118,7 @@ namespace SharePointBot.UnitTests
         public void LogOut_Match3()
         {
             var input = "logout please";
-            var pattern = Constants.UtteranceRegexes.LOGOUT;
+            var pattern = Constants.UtteranceRegexes.LogOut;
 
             var result = Regex.IsMatch(input, pattern, RegexOptions.IgnoreCase);
 
@@ -130,7 +130,7 @@ namespace SharePointBot.UnitTests
         public void LogOut_Match4()
         {
             var input = "I'd like to logout please";
-            var pattern = Constants.UtteranceRegexes.LOGOUT;
+            var pattern = Constants.UtteranceRegexes.LogOut;
 
             var result = Regex.IsMatch(input, pattern, RegexOptions.IgnoreCase);
 
@@ -142,7 +142,7 @@ namespace SharePointBot.UnitTests
         public void LogOut_Match5()
         {
             var input = "sign out";
-            var pattern = Constants.UtteranceRegexes.LOGOUT;
+            var pattern = Constants.UtteranceRegexes.LogOut;
 
             var result = Regex.IsMatch(input, pattern, RegexOptions.IgnoreCase);
 
@@ -154,7 +154,7 @@ namespace SharePointBot.UnitTests
         public void LogOut_Match6()
         {
             var input = "signout";
-            var pattern = Constants.UtteranceRegexes.LOGOUT;
+            var pattern = Constants.UtteranceRegexes.LogOut;
 
             var result = Regex.IsMatch(input, pattern, RegexOptions.IgnoreCase);
 
@@ -173,7 +173,7 @@ namespace SharePointBot.UnitTests
         public void SelectSite_Match1()
         {
             var input = "select site";
-            var pattern = Constants.UtteranceRegexes.SELECT_SITE;
+            var pattern = Constants.UtteranceRegexes.SelectSite;
 
             var result = Regex.IsMatch(input, pattern, RegexOptions.IgnoreCase);
 
@@ -185,7 +185,7 @@ namespace SharePointBot.UnitTests
         public void SelectSite_Match2()
         {
             var input = "select website";
-            var pattern = Constants.UtteranceRegexes.SELECT_SITE;
+            var pattern = Constants.UtteranceRegexes.SelectSite;
 
             var result = Regex.IsMatch(input, pattern, RegexOptions.IgnoreCase);
 
@@ -198,7 +198,7 @@ namespace SharePointBot.UnitTests
         public void SelectSite_Match3()
         {
             var input = "select web site";
-            var pattern = Constants.UtteranceRegexes.SELECT_SITE;
+            var pattern = Constants.UtteranceRegexes.SelectSite;
 
             var result = Regex.IsMatch(input, pattern, RegexOptions.IgnoreCase);
 
@@ -210,7 +210,7 @@ namespace SharePointBot.UnitTests
         public void SelectSite_Match4()
         {
             var input = "go to site";
-            var pattern = Constants.UtteranceRegexes.SELECT_SITE;
+            var pattern = Constants.UtteranceRegexes.SelectSite;
 
             var result = Regex.IsMatch(input, pattern, RegexOptions.IgnoreCase);
 
@@ -222,7 +222,7 @@ namespace SharePointBot.UnitTests
         public void SelectSite_Match5()
         {
             var input = "goto   site";
-            var pattern = Constants.UtteranceRegexes.SELECT_SITE;
+            var pattern = Constants.UtteranceRegexes.SelectSite;
 
             var result = Regex.IsMatch(input, pattern, RegexOptions.IgnoreCase);
 

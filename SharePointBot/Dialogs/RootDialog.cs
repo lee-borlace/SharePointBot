@@ -33,7 +33,7 @@ namespace SharePointBot.Dialogs
             var foundMatch = false;
             
             // Log in.
-            var match = Regex.Match(userToBot, Constants.UtteranceRegexes.LOGIN);
+            var match = Regex.Match(userToBot, Constants.UtteranceRegexes.Login);
             if (match.Success)
             {
                 foundMatch = true;
@@ -41,7 +41,7 @@ namespace SharePointBot.Dialogs
             }
 
             // Log out.
-            match = Regex.Match(userToBot, Constants.UtteranceRegexes.LOGOUT);
+            match = Regex.Match(userToBot, Constants.UtteranceRegexes.LogOut);
             if (match.Success)
             {
                 foundMatch = true;
@@ -49,7 +49,7 @@ namespace SharePointBot.Dialogs
             }
 
             // Select site.
-            match = Regex.Match(userToBot, Constants.UtteranceRegexes.SELECT_SITE);
+            match = Regex.Match(userToBot, Constants.UtteranceRegexes.SelectSite);
             if (match.Success)
             {
                 foundMatch = true;

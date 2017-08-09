@@ -9,11 +9,11 @@ namespace SharePointBot
     {
         public static class UtteranceRegexes
         {
-            public const string LOGIN = @"\s*(log|sign)\s*(in|on)\s*";
-            public const string LOGOUT = @"\s*(log|sign)\s*(out|off)\s*";
-            public const string SELECT_SITE = @"\s*((go\s*to)|(select))\s+((web\s*)?site)|web\s*";
-            public const string WHAT_IS_CURRENT_SITE = @"(what site am i on)|(what is the current list)";
-            public const string WHAT_IS_CURRENT_LIST = @"";
+            public const string Login = @"\s*(log|sign)\s*(in|on)\s*";
+            public const string LogOut = @"\s*(log|sign)\s*(out|off)\s*";
+            public const string SelectSite = @"\s*((go\s*to)|(select))\s+((web\s*)?site)|web\s*";
+            public const string WhatIsCurrentSite = @"(what site am i on)|(what is the current list)";
+            public const string WhatIsCurrentList = @"";
         }
       
 
@@ -23,6 +23,11 @@ namespace SharePointBot
 
         public static class Responses
         {
+        }
+
+        public static class StateKeys
+        {
+
         }
     }
 }
