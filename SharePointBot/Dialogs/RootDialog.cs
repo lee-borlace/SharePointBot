@@ -17,10 +17,8 @@ using SharePointBot.AutofacModules;
 namespace SharePointBot.Dialogs
 {
     [Serializable]
-    public class RootDialog : AutofacDialog, IDialog<object>
+    public class RootDialog : IDialog<object>
     {
-        public RootDialog(ILifetimeScope scope) : base(scope) { }
-
         public Task StartAsync(IDialogContext context)
         {
             context.Wait(MessageReceivedAsync);
@@ -30,7 +28,7 @@ namespace SharePointBot.Dialogs
 
         private async Task MessageReceivedAsync(IDialogContext context, IAwaitable<object> result)
         {
-            using (_dialogScope.BeginLifetimeScope())
+            using (var scope = Conversation.Container.BeginLifetimeScope())
             {
 
                 var message = await result;
@@ -60,7 +58,7 @@ namespace SharePointBot.Dialogs
                 if (match.Success)
                 {
                     foundMatch = true;
-                    context.Call(_dialogScope.Resolve<SelectSiteDialog>(), async (ctx, res) =>
+                    context.Call(scope.Resolve<SelectSiteDialog>(), async (ctx, res) =>
                     {
                         var dialogResult = await res;
                         context.Wait(MessageReceivedAsync);
@@ -72,7 +70,7 @@ namespace SharePointBot.Dialogs
                 if (match.Success)
                 {
                     foundMatch = true;
-                    context.Call(_dialogScope.Resolve<GetSiteDialog>(), async (ctx, res) =>
+                    context.Call(scope.Resolve<GetSiteDialog>(), async (ctx, res) =>
                     {
                         var dialogResult = await res;
                         context.Wait(MessageReceivedAsync);

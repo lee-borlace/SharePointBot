@@ -12,13 +12,11 @@ using SharePointBot.AutofacModules;
 namespace SharePointBot.Dialogs
 {
     [Serializable]
-    public class SelectSiteDialog : AutofacDialog, IDialog<object>
+    public class SelectSiteDialog : IDialog<object>
     {
-        public SelectSiteDialog(ILifetimeScope scope) : base(scope) { }
-
         public async Task StartAsync(IDialogContext context)
         {
-            using (var scope = _dialogScope.BeginLifetimeScope())
+            using (var scope = Conversation.Container.BeginLifetimeScope())
             {
                 var service = scope.Resolve<ISharePointBotStateService>(new NamedParameter("botContext", context));
 

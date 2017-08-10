@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using Autofac.Integration.WebApi;
 using Microsoft.Bot.Builder.Azure;
+using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Dialogs.Internals;
 using Microsoft.Bot.Connector;
 using SharePointBot.AutofacModules;
@@ -21,11 +22,20 @@ namespace SharePointBot
         {
             GlobalConfiguration.Configure(WebApiConfig.Register);
 
+            RegisterWebApiDependencies();
+            RegisterBotDependencies();
+        }
+
+       
+        /// <summary>
+        /// Register global dependencies for Web API.
+        /// </summary>
+        private static void RegisterWebApiDependencies()
+        {
             var builder = new ContainerBuilder();
 
             builder.RegisterModule(new DialogModule());
             builder.RegisterModule(new SharePointBotDialogsModule());
-            builder.RegisterModule(new SharePointBotStateServiceModule());
 
 #if DEBUG
 #else
@@ -53,6 +63,21 @@ namespace SharePointBot
             var config = GlobalConfiguration.Configuration;
             var container = builder.Build();
             config.DependencyResolver = new AutofacWebApiDependencyResolver(container);
+        }
+
+
+
+        /// <summary>
+        /// Register specific dependencies for bot.
+        /// </summary>
+        private void RegisterBotDependencies()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterModule(new SharePointBotDialogsModule());
+            builder.RegisterModule(new SharePointBotStateServiceModule());
+
+            // TODO : This method is obsolete - what alternatives are there?
+            builder.Update(Conversation.Container);
         }
     }
 }
