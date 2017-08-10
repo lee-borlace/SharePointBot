@@ -1,4 +1,5 @@
-﻿using Microsoft.SharePoint.Client;
+﻿using Microsoft.Bot.Builder.Dialogs;
+using Microsoft.SharePoint.Client;
 using SharePointBot.Model;
 using System;
 using System.Collections.Generic;

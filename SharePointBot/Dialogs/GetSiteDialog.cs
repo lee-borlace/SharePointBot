@@ -21,9 +21,9 @@ namespace SharePointBot.Dialogs
         {
             BotSite currentSite = null;
 
-            using (var scope = SharePointBotStateServiceModule.BeginLifetimeScope(this._dialogScope, context))
+            using (var scope = _dialogScope.BeginLifetimeScope())
             {
-                var service = scope.Resolve<ISharePointBotStateService>();
+                var service = scope.Resolve<SharePointBotStateService.Factory>().Invoke(context);
                 currentSite = await service.GetCurrentSite();
             }
 

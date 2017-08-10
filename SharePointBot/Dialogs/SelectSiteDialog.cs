@@ -18,9 +18,9 @@ namespace SharePointBot.Dialogs
 
         public async Task StartAsync(IDialogContext context)
         {
-            using (var scope = SharePointBotStateServiceModule.BeginLifetimeScope(this._dialogScope, (IBotContext)context))
+            using (var scope = _dialogScope.BeginLifetimeScope())
             {
-                var service = scope.Resolve<ISharePointBotStateService>();
+                var service = scope.Resolve<SharePointBotStateService.Factory>().Invoke(context);
 
                 await service.SetCurrentSite(
                     new BotSite
