@@ -10,7 +10,18 @@ namespace SharePointBot.Services
 {
     interface ISharePointBotStateService
     {
-        BotSite SetCurrentSite(BotSite site);
+        /// <summary>
+        /// Set currently-selected site for current user in current conversation in current channel.
+        /// </summary>
+        /// <param name="site"></param>
+        /// <returns></returns>
+        Task SetCurrentSite(BotSite site);
+
+        /// <summary>
+        /// Get currently-selected site for current user in current conversation in current channel.
+        /// </summary>
+        /// <returns></returns>
+        Task<BotSite> GetCurrentSite();
 
         /// <summary>
         /// Currently-selected list for user.

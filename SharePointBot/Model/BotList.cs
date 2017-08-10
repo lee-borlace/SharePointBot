@@ -8,6 +8,7 @@ namespace SharePointBot.Model
     /// <summary>
     /// A "list" as referenced by the bot. In actual fact this is a SP web.
     /// </summary>
+    [Serializable]
     public class BotList
     {
         /// <summary>

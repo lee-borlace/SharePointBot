@@ -5,7 +5,7 @@ using System.Web;
 
 namespace SharePointBot
 {
-    public static class Constants
+    public class Constants
     {
         public static class UtteranceRegexes
         {
@@ -27,7 +27,7 @@ namespace SharePointBot
 
         public static class StateKeys
         {
-
+            public const string CurrentSite = "SPBot_CurrentSite";
         }
     }
 }

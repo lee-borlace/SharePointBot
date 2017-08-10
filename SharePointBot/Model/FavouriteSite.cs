@@ -5,7 +5,11 @@ using System.Web;
 
 namespace SharePointBot.Model
 {
-    public class FavouriteWeb
+    /// <summary>
+    /// A site that the user has favourited.
+    /// </summary>
+    [Serializable]
+    public class FavouriteSite
     {
     }
 }

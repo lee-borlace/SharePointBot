@@ -59,6 +59,17 @@ namespace SharePointBot.Dialogs
                 });
             }
 
+            // What is current site.
+            match = Regex.Match(userToBot, Constants.UtteranceRegexes.WhatIsCurrentSite);
+            if (match.Success)
+            {
+                foundMatch = true;
+                context.Call(new GetSiteDialog(), async (ctx, res) => {
+                    var dialogResult = await res;
+                    context.Wait(MessageReceivedAsync);
+                });
+            }
+
 
             if (!foundMatch)
             {
