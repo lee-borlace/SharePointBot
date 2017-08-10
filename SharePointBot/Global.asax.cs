@@ -24,7 +24,8 @@ namespace SharePointBot
             var builder = new ContainerBuilder();
 
             builder.RegisterModule(new DialogModule());
-            builder.RegisterModule(new RootDialogModule());
+            builder.RegisterModule(new SharePointBotDialogsModule());
+            builder.RegisterModule(new SharePointBotStateServiceModule());
 
 #if DEBUG
 #else
@@ -45,6 +46,8 @@ namespace SharePointBot
             //    .AsSelf()
             //    .InstancePerLifetimeScope();
 #endif
+
+
 
             builder.RegisterApiControllers(Assembly.GetExecutingAssembly());
             var config = GlobalConfiguration.Configuration;

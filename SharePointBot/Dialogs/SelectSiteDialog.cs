@@ -6,24 +6,34 @@ using System.Web;
 using System.Threading.Tasks;
 using SharePointBot.Services;
 using SharePointBot.Model;
+using Autofac;
+using SharePointBot.AutofacModules;
 
 namespace SharePointBot.Dialogs
 {
-    public class SelectSiteDialog : IDialog<object>
+    [Serializable]
+    public class SelectSiteDialog : AutofacDialog, IDialog<object>
     {
+        public SelectSiteDialog(ILifetimeScope scope) : base(scope) { }
+
         public async Task StartAsync(IDialogContext context)
         {
-            await context.PostAsync("Site selected.");
+            using (var scope = SharePointBotStateServiceModule.BeginLifetimeScope(this._dialogScope, (IBotContext)context))
+            {
+                var service = scope.Resolve<ISharePointBotStateService>();
 
-            var service = new SharePointBotStateService(context);
-            await service.SetCurrentSite(
-                new BotSite {
-                    Alias = "health and fitness",
-                    Id = Guid.NewGuid(),
-                    Title = "My h&f site",
-                    Url = "/sites/whatevs"
-                }
-            );
+                await service.SetCurrentSite(
+                    new BotSite
+                    {
+                        Alias = "health and fitness",
+                        Id = Guid.NewGuid(),
+                        Title = "My h&f site",
+                        Url = "/sites/whatevs"
+                    }
+                );
+            }
+
+            await context.PostAsync("Site selected.");
 
             context.Done("All done!");
         }

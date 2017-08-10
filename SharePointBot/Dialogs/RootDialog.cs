@@ -11,12 +11,16 @@ using BotAuth;
 using System.Threading;
 using System.Text.RegularExpressions;
 using Microsoft.Bot.Builder.ConnectorEx;
+using Autofac;
+using SharePointBot.AutofacModules;
 
 namespace SharePointBot.Dialogs
 {
     [Serializable]
-    public class RootDialog : IDialog<object>
+    public class RootDialog : AutofacDialog, IDialog<object>
     {
+        public RootDialog(ILifetimeScope scope) : base(scope) { }
+
         public Task StartAsync(IDialogContext context)
         {
             context.Wait(MessageReceivedAsync);
@@ -26,54 +30,59 @@ namespace SharePointBot.Dialogs
 
         private async Task MessageReceivedAsync(IDialogContext context, IAwaitable<object> result)
         {
-            var message = await result;
-            var activity = await result as Activity;
-            var userToBot = activity.Text.ToLowerInvariant();
-
-            var foundMatch = false;
-            
-            // Log in.
-            var match = Regex.Match(userToBot, Constants.UtteranceRegexes.Login);
-            if (match.Success)
+            using (_dialogScope.BeginLifetimeScope())
             {
-                foundMatch = true;
-                await Login(context, message);
-            }
 
-            // Log out.
-            match = Regex.Match(userToBot, Constants.UtteranceRegexes.LogOut);
-            if (match.Success)
-            {
-                foundMatch = true;
-                await LogOut(context);
-            }
+                var message = await result;
+                var activity = await result as Activity;
+                var userToBot = activity.Text.ToLowerInvariant();
 
-            // Select site.
-            match = Regex.Match(userToBot, Constants.UtteranceRegexes.SelectSite);
-            if (match.Success)
-            {
-                foundMatch = true;
-                context.Call(new SelectSiteDialog(), async (ctx, res) => {
-                    var dialogResult = await res;
+                var foundMatch = false;
+
+                // Log in.
+                var match = Regex.Match(userToBot, Constants.UtteranceRegexes.Login);
+                if (match.Success)
+                {
+                    foundMatch = true;
+                    await Login(context, message);
+                }
+
+                // Log out.
+                match = Regex.Match(userToBot, Constants.UtteranceRegexes.LogOut);
+                if (match.Success)
+                {
+                    foundMatch = true;
+                    await LogOut(context);
+                }
+
+                // Select site.
+                match = Regex.Match(userToBot, Constants.UtteranceRegexes.SelectSite);
+                if (match.Success)
+                {
+                    foundMatch = true;
+                    context.Call(_dialogScope.Resolve<SelectSiteDialog>(), async (ctx, res) =>
+                    {
+                        var dialogResult = await res;
+                        context.Wait(MessageReceivedAsync);
+                    });
+                }
+
+                // What is current site.
+                match = Regex.Match(userToBot, Constants.UtteranceRegexes.WhatIsCurrentSite);
+                if (match.Success)
+                {
+                    foundMatch = true;
+                    context.Call(_dialogScope.Resolve<GetSiteDialog>(), async (ctx, res) =>
+                    {
+                        var dialogResult = await res;
+                        context.Wait(MessageReceivedAsync);
+                    });
+                }
+
+                if (!foundMatch)
+                {
                     context.Wait(MessageReceivedAsync);
-                });
-            }
-
-            // What is current site.
-            match = Regex.Match(userToBot, Constants.UtteranceRegexes.WhatIsCurrentSite);
-            if (match.Success)
-            {
-                foundMatch = true;
-                context.Call(new GetSiteDialog(), async (ctx, res) => {
-                    var dialogResult = await res;
-                    context.Wait(MessageReceivedAsync);
-                });
-            }
-
-
-            if (!foundMatch)
-            {
-                context.Wait(MessageReceivedAsync);
+                }
             }
         }
 

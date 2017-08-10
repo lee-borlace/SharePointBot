@@ -19,6 +19,13 @@ namespace SharePointBot.Services
         IBotState _botState;
         StateClient _stateClient;
 
+        /// <summary>
+        /// Used so we can pass parameters into Autofac-created object.
+        /// </summary>
+        /// <param name="botContext"></param>
+        /// <returns></returns>
+        public delegate SharePointBotStateService Factory(IBotContext botContext);
+
         public SharePointBotStateService(IBotContext botContext)
         {
             _botContext = botContext;

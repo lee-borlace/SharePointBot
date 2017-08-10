@@ -6,16 +6,26 @@ using System.Web;
 using System.Threading.Tasks;
 using SharePointBot.Services;
 using SharePointBot.Model;
+using Autofac;
+using Microsoft.Bot.Builder.Internals.Fibers;
+using SharePointBot.AutofacModules;
 
 namespace SharePointBot.Dialogs
 {
-    public class GetSiteDialog : IDialog<object>
+    [Serializable]
+    public class GetSiteDialog : AutofacDialog, IDialog<object>
     {
+        public GetSiteDialog(ILifetimeScope scope) : base(scope) { }
+
         public async Task StartAsync(IDialogContext context)
         {
-            var service = new SharePointBotStateService(context);
+            BotSite currentSite = null;
 
-            var currentSite = await service.GetCurrentSite();
+            using (var scope = SharePointBotStateServiceModule.BeginLifetimeScope(this._dialogScope, context))
+            {
+                var service = scope.Resolve<ISharePointBotStateService>();
+                currentSite = await service.GetCurrentSite();
+            }
 
             if (currentSite != null)
             {
