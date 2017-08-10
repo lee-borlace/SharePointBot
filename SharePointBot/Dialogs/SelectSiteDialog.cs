@@ -20,7 +20,7 @@ namespace SharePointBot.Dialogs
         {
             using (var scope = _dialogScope.BeginLifetimeScope())
             {
-                var service = scope.Resolve<SharePointBotStateService.Factory>().Invoke(context);
+                var service = scope.Resolve<ISharePointBotStateService>(new NamedParameter("botContext", context));
 
                 await service.SetCurrentSite(
                     new BotSite
