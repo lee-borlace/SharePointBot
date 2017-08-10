@@ -72,12 +72,10 @@ namespace SharePointBot
         /// </summary>
         private void RegisterBotDependencies()
         {
-            var builder = new ContainerBuilder();
-            builder.RegisterModule(new SharePointBotDialogsModule());
-            builder.RegisterModule(new SharePointBotStateServiceModule());
-
-            // TODO : This method is obsolete - what alternatives are there?
-            builder.Update(Conversation.Container);
+            Conversation.UpdateContainer(builder => {
+                builder.RegisterModule(new SharePointBotDialogsModule());
+                builder.RegisterModule(new SharePointBotStateServiceModule());
+            });
         }
     }
 }
