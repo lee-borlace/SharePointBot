@@ -9,15 +9,16 @@ using System.Web;
 namespace SharePointBot.AutofacModules
 {
     /// <summary>
-    /// Autofac module for SharePointBotStateService dependencies.
+    /// Autofac module for services dependencies.
     /// </summary>
-    public class SharePointBotStateServiceModule : Module
+    public class ServicesModule : Module
     {
         protected override void Load(ContainerBuilder builder)
         {
             base.Load(builder);
 
             builder.RegisterType<SharePointBotStateService>().As<ISharePointBotStateService>();
+            builder.RegisterType<SharePointService>().As<ISharePointService>();
         }
     }
 }

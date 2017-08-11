@@ -13,6 +13,7 @@ using System.Text.RegularExpressions;
 using Microsoft.Bot.Builder.ConnectorEx;
 using Autofac;
 using SharePointBot.AutofacModules;
+using SharePointBot.Helpers;
 
 namespace SharePointBot.Dialogs
 {
@@ -42,7 +43,7 @@ namespace SharePointBot.Dialogs
                 if (match.Success)
                 {
                     foundMatch = true;
-                    await Login(context, message);
+                    await AuthenticationHelper.ForwardToLoginDialog(context, message, LoginCallBack);
                 }
 
                 // Log out.
@@ -50,7 +51,7 @@ namespace SharePointBot.Dialogs
                 if (match.Success)
                 {
                     foundMatch = true;
-                    await LogOut(context);
+                    await AuthenticationHelper.LogOut(context);
                 }
 
                 // Select site.
@@ -86,50 +87,13 @@ namespace SharePointBot.Dialogs
                 }
             }
         }
+      
 
-        private Task PostDialogHandler(IDialogContext context, IAwaitable<object> result)
+        private async Task LoginCallBack(IDialogContext authContext, IAwaitable<AuthResult> authResult)
         {
-            throw new NotImplementedException();
-        }
-
-        private async Task Login(IDialogContext context, object message)
-        {
-            // Initialize AuthenticationOptions and forward to AuthDialog for token
-            AuthenticationOptions options = new AuthenticationOptions()
-            {
-                Authority = ConfigurationManager.AppSettings["aad:Authority"],
-                ClientId = ConfigurationManager.AppSettings["MicrosoftAppId"],
-                ClientSecret = ConfigurationManager.AppSettings["MicrosoftAppPassword"],
-                Scopes = new string[] { "User.Read" },
-                RedirectUrl = ConfigurationManager.AppSettings["aad:Callback"]
-            };
-
-            await context.Forward(new AuthDialog(new MSALAuthProvider(), options), async (IDialogContext authContext, IAwaitable<AuthResult> authResult) =>
-            {
-                var authResultAwaited = await authResult;
-
-                // Use token to call into service
-                var json = await new HttpClient().GetWithAuthAsync(authResultAwaited.AccessToken, "https://graph.microsoft.com/beta/sites/lee79.sharepoint.com:/sites/dev:/lists");
-                await authContext.PostAsync("Made the call OK.");
-            }, message, CancellationToken.None);
-        }
-
-        private async Task LogOut(IDialogContext context)
-        {
-            // We will store the conversation reference in the callback URL. When Office 365 logs out it will hit the LogOut endpoint and pass
-            // that reference. That event signifies that log out has completed, and will prompt a message from the bot to the user to indicate that fact.
-            var conversationRef = context.Activity.ToConversationReference();
-
-            AuthenticationOptions options = new AuthenticationOptions()
-            {
-                Authority = ConfigurationManager.AppSettings["aad:Authority"],
-                ClientId = ConfigurationManager.AppSettings["MicrosoftAppId"],
-                ClientSecret = ConfigurationManager.AppSettings["MicrosoftAppPassword"],
-                Scopes = new string[] { "User.Read" },
-                RedirectUrl = $"{ConfigurationManager.AppSettings["PostLogoutUrl"]}?conversationRef={UrlToken.Encode(conversationRef)}"
-            };
-
-            await new MSALAuthProvider().Logout(options, context);
+            var authResultAwaited = await authResult;
+            var json = await new HttpClient().GetWithAuthAsync(authResultAwaited.AccessToken, "https://graph.microsoft.com/beta/sites/lee79.sharepoint.com:/sites/dev:/lists");
+            await authContext.PostAsync("Made the call OK.");
         }
     }
 }

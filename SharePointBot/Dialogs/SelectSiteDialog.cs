@@ -23,6 +23,43 @@ namespace SharePointBot.Dialogs
 
         public async Task StartAsync(IDialogContext context)
         {
+            if (!string.IsNullOrEmpty(_siteTitleOrAlias))
+            {
+                await StoreSelectedSiteInBotState(context);
+            }
+            else
+            {
+                PromptDialog.Text(
+                   context,
+                   this.AfterSiteSpecified,
+                   Constants.Responses.SelectWhichSite,
+                   attempts: 3
+               );
+            }
+
+            await context.PostAsync($"Site {_siteTitleOrAlias} selected.");
+
+            context.Done("All done!");
+        }
+
+        private async Task AfterSiteSpecified(IDialogContext context, IAwaitable<string> result)
+        {
+            _siteTitleOrAlias = await result;
+            await CheckSpecifiedSite(context);
+        }
+
+        /// <summary>
+        /// Check whether specified site matches the title of a SharePoint site or the alias of a previously-favourited site.
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        private Task CheckSpecifiedSite(IDialogContext context)
+        {
+            throw new NotImplementedException();
+        }
+
+        private async Task StoreSelectedSiteInBotState(IDialogContext context)
+        {
             using (var scope = Conversation.Container.BeginLifetimeScope())
             {
                 var service = scope.Resolve<ISharePointBotStateService>(new NamedParameter(Constants.FieldNames.BotContext, context));
@@ -37,10 +74,6 @@ namespace SharePointBot.Dialogs
                     }
                 );
             }
-
-            await context.PostAsync($"Site {_siteTitleOrAlias} selected.");
-
-            context.Done("All done!");
         }
     }
 }

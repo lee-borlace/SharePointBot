@@ -74,7 +74,7 @@ namespace SharePointBot
         {
             Conversation.UpdateContainer(builder => {
                 builder.RegisterModule(new SharePointBotDialogsModule());
-                builder.RegisterModule(new SharePointBotStateServiceModule());
+                builder.RegisterModule(new ServicesModule());
             });
         }
     }
