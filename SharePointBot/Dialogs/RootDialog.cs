@@ -58,6 +58,9 @@ namespace SharePointBot.Dialogs
                 if (match.Success)
                 {
                     foundMatch = true;
+
+                    var siteTitleOrAlias = match.Groups[Constants.RegexGroupNames.SiteTitleOrAlias];
+
                     context.Call(scope.Resolve<SelectSiteDialog>(), async (ctx, res) =>
                     {
                         var dialogResult = await res;

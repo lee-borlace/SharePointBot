@@ -164,13 +164,13 @@ namespace SharePointBot.UnitTests
 
         #endregion
 
-        #region Select site
+        #region Select site - no site specified
 
-        const string CATEGORY_SELECT_SITE = "Select site";
+        const string CATEGORY_SELECT_SITE_NO_SITE_SPECIFIED = "Select site - no site specified";
 
         [TestMethod]
-        [TestCategory(CATEGORY_LOG_OUT)]
-        public void SelectSite_Match1()
+        [TestCategory(CATEGORY_SELECT_SITE_NO_SITE_SPECIFIED)]
+        public void SelectSite_NoSiteSpecified_Match1()
         {
             var input = "select site";
             var pattern = Constants.UtteranceRegexes.SelectSite;
@@ -181,8 +181,8 @@ namespace SharePointBot.UnitTests
         }
 
         [TestMethod]
-        [TestCategory(CATEGORY_LOG_OUT)]
-        public void SelectSite_Match2()
+        [TestCategory(CATEGORY_SELECT_SITE_NO_SITE_SPECIFIED)]
+        public void SelectSite_NoSiteSpecified_Match2()
         {
             var input = "select website";
             var pattern = Constants.UtteranceRegexes.SelectSite;
@@ -194,8 +194,8 @@ namespace SharePointBot.UnitTests
 
 
         [TestMethod]
-        [TestCategory(CATEGORY_LOG_OUT)]
-        public void SelectSite_Match3()
+        [TestCategory(CATEGORY_SELECT_SITE_NO_SITE_SPECIFIED)]
+        public void SelectSite_NoSiteSpecified_Match3()
         {
             var input = "select web site";
             var pattern = Constants.UtteranceRegexes.SelectSite;
@@ -206,8 +206,8 @@ namespace SharePointBot.UnitTests
         }
 
         [TestMethod]
-        [TestCategory(CATEGORY_LOG_OUT)]
-        public void SelectSite_Match4()
+        [TestCategory(CATEGORY_SELECT_SITE_NO_SITE_SPECIFIED)]
+        public void SelectSite_NoSiteSpecified_Match4()
         {
             var input = "go to site";
             var pattern = Constants.UtteranceRegexes.SelectSite;
@@ -218,8 +218,8 @@ namespace SharePointBot.UnitTests
         }
 
         [TestMethod]
-        [TestCategory(CATEGORY_LOG_OUT)]
-        public void SelectSite_Match5()
+        [TestCategory(CATEGORY_SELECT_SITE_NO_SITE_SPECIFIED)]
+        public void SelectSite_NoSiteSpecified_Match5()
         {
             var input = "goto   site";
             var pattern = Constants.UtteranceRegexes.SelectSite;
@@ -227,6 +227,109 @@ namespace SharePointBot.UnitTests
             var result = Regex.IsMatch(input, pattern, RegexOptions.IgnoreCase);
 
             Assert.IsTrue(result);
+        }
+
+        #endregion
+
+        #region Select site - site specified
+
+        const string CATEGORY_SELECT_SITE_SITE_SPECIFIED = "Select site - site specified";
+
+        [TestMethod]
+        [TestCategory(CATEGORY_LOG_OUT)]
+        public void SelectSite_SiteSpecified_Match1()
+        {
+            var input = "select site abcd";
+            var pattern = Constants.UtteranceRegexes.SelectSite;
+
+            var match = Regex.Match(input, pattern, RegexOptions.IgnoreCase, Regex.InfiniteMatchTimeout);
+            var siteTitleOrAlias = match.Groups[Constants.RegexGroupNames.SiteTitleOrAlias].Value;
+
+            Assert.IsTrue(match.Success);
+            Assert.IsFalse(string.IsNullOrEmpty(siteTitleOrAlias));
+            Assert.AreEqual("abcd", siteTitleOrAlias);
+
+            
+        }
+
+        [TestMethod]
+        [TestCategory(CATEGORY_LOG_OUT)]
+        public void SelectSite_SiteSpecified_Match2()
+        {
+            var input = "select website    health and fitness";
+            var pattern = Constants.UtteranceRegexes.SelectSite;
+
+            var match = Regex.Match(input, pattern, RegexOptions.IgnoreCase, Regex.InfiniteMatchTimeout);
+            var siteTitleOrAlias = match.Groups[Constants.RegexGroupNames.SiteTitleOrAlias].Value;
+
+            Assert.IsTrue(match.Success);
+            Assert.IsFalse(string.IsNullOrEmpty(siteTitleOrAlias));
+            Assert.AreEqual("health and fitness", siteTitleOrAlias);
+        }
+
+
+        /// <summary>
+        /// TODO - get this working. Doesn't cope with quote in website name.
+        /// </summary>
+        [TestMethod]
+        [TestCategory(CATEGORY_LOG_OUT)]
+        public void SelectSite_SiteSpecified_Match3()
+        {
+            var input = "   select  web  site crazy jack's crazy website";
+            var pattern = Constants.UtteranceRegexes.SelectSite;
+
+            var match = Regex.Match(input, pattern, RegexOptions.IgnoreCase, Regex.InfiniteMatchTimeout);
+            var siteTitleOrAlias = match.Groups[Constants.RegexGroupNames.SiteTitleOrAlias].Value;
+
+            Assert.IsTrue(match.Success);
+            Assert.IsFalse(string.IsNullOrEmpty(siteTitleOrAlias));
+            Assert.AreEqual("crazy jack's crazy website", siteTitleOrAlias);
+        }
+
+
+        [TestMethod]
+        [TestCategory(CATEGORY_LOG_OUT)]
+        public void SelectSite_SiteSpecified_Match4()
+        {
+            var input = "   select  website website";
+            var pattern = Constants.UtteranceRegexes.SelectSite;
+
+            var match = Regex.Match(input, pattern, RegexOptions.IgnoreCase, Regex.InfiniteMatchTimeout);
+            var siteTitleOrAlias = match.Groups[Constants.RegexGroupNames.SiteTitleOrAlias].Value;
+
+            Assert.IsTrue(match.Success);
+            Assert.IsFalse(string.IsNullOrEmpty(siteTitleOrAlias));
+            Assert.AreEqual("website", siteTitleOrAlias);
+        }
+
+        [TestMethod]
+        [TestCategory(CATEGORY_LOG_OUT)]
+        public void SelectSite_SiteSpecified_Match5()
+        {
+            var input = "go to site aaa bbb ccc";
+            var pattern = Constants.UtteranceRegexes.SelectSite;
+
+            var match = Regex.Match(input, pattern, RegexOptions.IgnoreCase, Regex.InfiniteMatchTimeout);
+            var siteTitleOrAlias = match.Groups[Constants.RegexGroupNames.SiteTitleOrAlias].Value;
+
+            Assert.IsTrue(match.Success);
+            Assert.IsFalse(string.IsNullOrEmpty(siteTitleOrAlias));
+            Assert.AreEqual("aaa bbb ccc", siteTitleOrAlias);
+        }
+
+        [TestMethod]
+        [TestCategory(CATEGORY_LOG_OUT)]
+        public void SelectSite_SiteSpecified_Match6()
+        {
+            var input = "goto   site zzz 111";
+            var pattern = Constants.UtteranceRegexes.SelectSite;
+
+            var match = Regex.Match(input, pattern, RegexOptions.IgnoreCase, Regex.InfiniteMatchTimeout);
+            var siteTitleOrAlias = match.Groups[Constants.RegexGroupNames.SiteTitleOrAlias].Value;
+
+            Assert.IsTrue(match.Success);
+            Assert.IsFalse(string.IsNullOrEmpty(siteTitleOrAlias));
+            Assert.AreEqual("zzz 111", siteTitleOrAlias);
         }
 
         #endregion
