@@ -18,6 +18,7 @@ using System.Web;
 
 namespace SharePointBot.Services
 {
+    [Serializable]
     public class AuthenticationService : IAuthenticationService
     {
         public AuthenticationOptions GetDefaultOffice365Options()

@@ -90,9 +90,6 @@ namespace SharePointBot.Dialogs
 
         private async Task LoginCallBack(IDialogContext authContext, IAwaitable<AuthResult> authResult)
         {
-            var authResultAwaited = await authResult;
-            var json = await new HttpClient().GetWithAuthAsync(authResultAwaited.AccessToken, "https://graph.microsoft.com/beta/sites/lee79.sharepoint.com:/sites/dev:/lists");
-            await authContext.PostAsync("Made the call OK.");
         }
     }
 }

@@ -32,7 +32,7 @@ namespace SharePointBot.Dialogs
             {
                 var siteNameToDisplay = !string.IsNullOrEmpty(currentSite.Alias) ? currentSite.Alias : currentSite.Title;
 
-                await context.PostAsync($"You are on '{siteNameToDisplay}' ({currentSite.Url}).");
+                await context.PostAsync($"You are on site '{siteNameToDisplay}' ({currentSite.Url}).");
             }
             else
             {

@@ -51,5 +51,17 @@ namespace SharePointBot
             public const int DialogAttempts = 3;
         }
 
+
+        public static class GraphApiUrls
+        {
+            public const string RootSite = "https://graph.microsoft.com/v1.0/sites/root";
+        }
+
+        public static class RestApi
+        {
+            public const string SiteName = "displayName";
+            public const string SiteUrl = "webUrl";
+        }
+
     }
 }

@@ -23,10 +23,8 @@ namespace SharePointBot.Dialogs
         /// </summary>
         protected string _siteTitleOrAlias;
 
-        [NonSerialized]
         protected IAuthenticationService _authenticationService;
 
-        [NonSerialized]
         protected ISharePointService _sharePointService;
 
         /// <summary>
@@ -102,7 +100,7 @@ namespace SharePointBot.Dialogs
 
 
         /// <summary>
-        /// 
+        /// Prompted for and received site name / alias. Proceed with checking.
         /// </summary>
         /// <param name="ctx"></param>
         /// <param name="result"></param>
@@ -116,19 +114,13 @@ namespace SharePointBot.Dialogs
 
 
         /// <summary>
-        /// Try to get the specified site.If it doesn't exist, trigger a dialog to narrow the source.
+        /// Try to get the specified site. TODO : If it doesn't exist, trigger a dialog to narrow the source.
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
         private async Task GetSpecifiedSite(IDialogContext context)
         {
-            _site = new BotSite
-            {
-                Alias = _siteTitleOrAlias,
-                Id = Guid.NewGuid(),
-                Title = _siteTitleOrAlias,
-                Url = "/sites/whatevs"
-            };
+            _site = await _sharePointService.GetWebByTitle(_siteTitleOrAlias, await _authenticationService.GetAccessToken(context));
         }
 
         /// <summary>
@@ -148,6 +140,12 @@ namespace SharePointBot.Dialogs
             }
         }
 
+        /// <summary>
+        /// Return from the get site dialog which is called at the end of this dialog.
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="result"></param>
+        /// <returns></returns>
         private async Task ReturnFromGetSiteDialog(IDialogContext context, IAwaitable<BotSite> result)
         {
             context.Done(_site);
