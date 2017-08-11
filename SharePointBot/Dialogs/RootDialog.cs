@@ -44,7 +44,7 @@ namespace SharePointBot.Dialogs
                 if (match.Success)
                 {
                     foundMatch = true;
-                    await scope.Resolve<IAuthenticationService>().ForwardToLoginDialog(context, message, LoginCallBack);
+                    await scope.Resolve<IAuthenticationService>().ForwardToLoginDialog(context, message as IMessageActivity, LoginCallBack);
                 }
 
                 // Log out.

@@ -1,5 +1,6 @@
 ﻿using BotAuth.Models;
 using Microsoft.Bot.Builder.Dialogs;
+using Microsoft.Bot.Connector;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,10 +9,14 @@ using System.Threading.Tasks;
 
 namespace SharePointBot.Services.Interfaces
 {
-    interface IAuthenticationService
+    public interface IAuthenticationService
     {
         AuthenticationOptions GetDefaultOffice365Options();
-        Task ForwardToLoginDialog(IDialogContext context, object message, ResumeAfter<AuthResult> loginCallBack);
+
+        Task ForwardToLoginDialog(IDialogContext context, IMessageActivity message, ResumeAfter<AuthResult> loginCallBack);
+
         Task LogOut(IDialogContext context);
+
+        Task<AuthResult> GetAccessToken(IDialogContext context);
     }
 }

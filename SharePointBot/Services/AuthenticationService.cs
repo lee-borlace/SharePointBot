@@ -4,6 +4,7 @@ using BotAuth.Dialogs;
 using BotAuth.Models;
 using Microsoft.Bot.Builder.ConnectorEx;
 using Microsoft.Bot.Builder.Dialogs;
+using Microsoft.Bot.Connector;
 using SharePointBot.Services.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -30,7 +31,7 @@ namespace SharePointBot.Services
             };
         }
 
-        public async Task ForwardToLoginDialog(IDialogContext context, object message, ResumeAfter<AuthResult> loginCallBack)
+        public async Task ForwardToLoginDialog(IDialogContext context, IMessageActivity message, ResumeAfter<AuthResult> loginCallBack)
         {
             var options = GetDefaultOffice365Options();
             options.RedirectUrl = ConfigurationManager.AppSettings["aad:Callback"];
@@ -47,6 +48,13 @@ namespace SharePointBot.Services
             options.RedirectUrl = $"{ConfigurationManager.AppSettings["PostLogoutUrl"]}?conversationRef={UrlToken.Encode(conversationRef)}";
 
             await new MSALAuthProvider().Logout(options, context);
+        }
+
+        public async Task<AuthResult> GetAccessToken(IDialogContext context)
+        {
+            var options = GetDefaultOffice365Options();
+            options.RedirectUrl = ConfigurationManager.AppSettings["aad:Callback"];
+            return await new MSALAuthProvider().GetAccessToken(options, context);
         }
     }
 }

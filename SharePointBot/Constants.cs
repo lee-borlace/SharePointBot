@@ -24,6 +24,7 @@ namespace SharePointBot
         public static class Responses
         {
             public static string SelectWhichSite = "What's the title or alias of the site you want to select?";
+            public static string LogOnFirst = "You'll need to log on first.";
         }
 
         public static class StateKeys

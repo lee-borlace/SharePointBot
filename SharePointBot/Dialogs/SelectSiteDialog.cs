@@ -9,6 +9,9 @@ using SharePointBot.Model;
 using Autofac;
 using SharePointBot.AutofacModules;
 using SharePointBot.Services.Interfaces;
+using Microsoft.Bot.Builder.Internals.Fibers;
+using BotAuth.Models;
+using Microsoft.Bot.Connector;
 
 namespace SharePointBot.Dialogs
 {
@@ -20,14 +23,22 @@ namespace SharePointBot.Dialogs
         /// </summary>
         protected string _siteTitleOrAlias;
 
+        [NonSerialized]
+        protected IAuthenticationService _authenticationService;
+
+        [NonSerialized]
+        protected ISharePointService _sharePointService;
+
         /// <summary>
         /// The resolved site.
         /// </summary>
         protected BotSite _site;
 
-        public SelectSiteDialog(string siteTitleOrAlias)
+        public SelectSiteDialog(string siteTitleOrAlias, IAuthenticationService authenticationService, ISharePointService sharePointService)
         {
-            _siteTitleOrAlias = siteTitleOrAlias;
+            SetField.NotNull(out _siteTitleOrAlias, nameof(_siteTitleOrAlias), siteTitleOrAlias);
+            SetField.NotNull(out _authenticationService, nameof(_authenticationService), authenticationService);
+            SetField.NotNull(out _sharePointService, nameof(_sharePointService), sharePointService);
         }
 
         /// <summary>
@@ -36,6 +47,40 @@ namespace SharePointBot.Dialogs
         /// <param name="context"></param>
         /// <returns></returns>
         public async Task StartAsync(IDialogContext context)
+        {
+            // Make sure we have an access token before trying to select site.
+            var accessToken = await _authenticationService.GetAccessToken(context);
+
+            // No access token - redirect to login dialog first.
+            if (accessToken == null)
+            {
+                await context.PostAsync(Constants.Responses.LogOnFirst);
+                await _authenticationService.ForwardToLoginDialog(context, context.Activity as IMessageActivity, AfterLogOn);
+            }
+            else
+            {
+                await SelectSite(context);
+            }
+        }
+
+        /// <summary>
+        /// User has logged on. Continue with the dialog.
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="result"></param>
+        /// <returns></returns>
+        private async Task AfterLogOn(IDialogContext context, IAwaitable<AuthResult> result)
+        {
+            await SelectSite(context);
+        }
+
+
+        /// <summary>
+        /// Select site.
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        private async Task SelectSite(IDialogContext context)
         {
             // If title / alias was specified when opening the dialog, check it and store it.
             if (!string.IsNullOrEmpty(_siteTitleOrAlias))
@@ -48,12 +93,13 @@ namespace SharePointBot.Dialogs
             {
                 PromptDialog.Text(
                    context,
-                   this.GetAndStoreSiteFromInput,
+                   this.AfterGetSiteFromInput,
                    Constants.Responses.SelectWhichSite,
                    attempts: Constants.Misc.DialogAttempts
                );
             }
         }
+
 
         /// <summary>
         /// 
@@ -61,7 +107,7 @@ namespace SharePointBot.Dialogs
         /// <param name="ctx"></param>
         /// <param name="result"></param>
         /// <returns></returns>
-        private async Task GetAndStoreSiteFromInput(IDialogContext ctx, IAwaitable<string> result)
+        private async Task AfterGetSiteFromInput(IDialogContext ctx, IAwaitable<string> result)
         {
             _siteTitleOrAlias = await result;
             await GetSpecifiedSite(ctx);

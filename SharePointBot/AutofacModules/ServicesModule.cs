@@ -19,7 +19,7 @@ namespace SharePointBot.AutofacModules
             base.Load(builder);
 
             builder.RegisterType<SharePointBotStateService>().As<ISharePointBotStateService>();
-            builder.RegisterType<SharePointService>().As<ISharePointService>();
+            builder.RegisterType<SharePointService>().As<ISharePointService>().SingleInstance();
             builder.RegisterType<AuthenticationService>().As<IAuthenticationService>().SingleInstance();
         }
     }
