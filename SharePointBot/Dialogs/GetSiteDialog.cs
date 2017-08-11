@@ -13,7 +13,7 @@ using SharePointBot.AutofacModules;
 namespace SharePointBot.Dialogs
 {
     [Serializable]
-    public class GetSiteDialog : IDialog<object>
+    public class GetSiteDialog : IDialog<BotSite>
     {
 
         public async Task StartAsync(IDialogContext context)
@@ -38,7 +38,7 @@ namespace SharePointBot.Dialogs
                 await context.PostAsync("You haven't selected a site.");
             }
 
-            context.Done("All done!");
+            context.Done(currentSite);
         }
     }
 }

@@ -23,7 +23,7 @@ namespace SharePointBot
 
         public static class Responses
         {
-            public static string SelectWhichSite = "What's the title of the site you'd like to select?";
+            public static string SelectWhichSite = "What's the title or alias of the site you want to select?";
         }
 
         public static class StateKeys
@@ -44,5 +44,11 @@ namespace SharePointBot
         {
             public const string SiteTitleOrAlias = "siteTitleOrAlias";
         }
+
+        public static class Misc
+        {
+            public const int DialogAttempts = 3;
+        }
+
     }
 }

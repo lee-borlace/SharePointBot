@@ -14,6 +14,7 @@ using Microsoft.Bot.Builder.ConnectorEx;
 using Autofac;
 using SharePointBot.AutofacModules;
 using SharePointBot.Helpers;
+using SharePointBot.Model;
 
 namespace SharePointBot.Dialogs
 {
@@ -62,11 +63,7 @@ namespace SharePointBot.Dialogs
 
                     var siteTitleOrAlias = match.Groups[Constants.RegexGroupNames.SiteTitleOrAlias].Value;
 
-                    context.Call(scope.Resolve<SelectSiteDialog>(new NamedParameter(Constants.FieldNames.SiteTitleOrAlias, siteTitleOrAlias)), async (ctx, res) =>
-                    {
-                        var dialogResult = await res;
-                        context.Wait(MessageReceivedAsync);
-                    });
+                    context.Call(scope.Resolve<SelectSiteDialog>(new NamedParameter(Constants.FieldNames.SiteTitleOrAlias, siteTitleOrAlias)), ReturnFromDialog);
                 }
 
                 // What is current site.
@@ -74,11 +71,7 @@ namespace SharePointBot.Dialogs
                 if (match.Success)
                 {
                     foundMatch = true;
-                    context.Call(scope.Resolve<GetSiteDialog>(), async (ctx, res) =>
-                    {
-                        var dialogResult = await res;
-                        context.Wait(MessageReceivedAsync);
-                    });
+                    context.Call(scope.Resolve<GetSiteDialog>(), ReturnFromDialog);
                 }
 
                 if (!foundMatch)
@@ -87,7 +80,13 @@ namespace SharePointBot.Dialogs
                 }
             }
         }
-      
+
+        private async Task ReturnFromDialog(IDialogContext context, IAwaitable<BotSite> result)
+        {
+            var dialogResult = await result;
+            context.Wait(MessageReceivedAsync);
+        }
+
 
         private async Task LoginCallBack(IDialogContext authContext, IAwaitable<AuthResult> authResult)
         {
