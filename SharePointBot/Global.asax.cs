@@ -36,29 +36,6 @@ namespace SharePointBot
 
             builder.RegisterModule(new DialogModule());
             builder.RegisterModule(new SharePointBotDialogsModule());
-
-#if DEBUG
-#else
-            // TODO : See issue #1 - when this is commented in, the the Callback controller in BotAuth fails to locate the previous conversation and cannot resume
-
-            //builder.RegisterModule(new AzureModule(Assembly.GetExecutingAssembly()));
-
-            //var store = new TableBotDataStore(ConfigurationManager.AppSettings["StorageConnectionString"]);
-            //builder.Register(c => store)
-            //    .Keyed<IBotDataStore<BotData>>(AzureModule.Key_DataStore)
-            //    .AsSelf()
-            //    .SingleInstance();
-
-
-            //builder.Register(c => new CachingBotDataStore(store,
-            //                                              CachingBotDataStoreConsistencyPolicy.ETagBasedConsistency))
-            //    .As<IBotDataStore<BotData>>()
-            //    .AsSelf()
-            //    .InstancePerLifetimeScope();
-#endif
-
-
-
             builder.RegisterApiControllers(Assembly.GetExecutingAssembly());
             var config = GlobalConfiguration.Configuration;
             var container = builder.Build();
@@ -75,6 +52,20 @@ namespace SharePointBot
             Conversation.UpdateContainer(builder => {
                 builder.RegisterModule(new SharePointBotDialogsModule());
                 builder.RegisterModule(new ServicesModule());
+
+#if DEBUG
+#else                
+                // TODO : See issue #1 - this causes issues when commented in. Need to work out how to use Azure Storage.
+
+                //builder.RegisterModule(new AzureModule(Assembly.GetExecutingAssembly()));
+
+                //var store = new TableBotDataStore(ConfigurationManager.AppSettings["StorageConnectionString"]);
+
+                //builder.Register(c => store)
+                //    .Keyed<IBotDataStore<BotData>>(AzureModule.Key_DataStore)
+                //    .AsSelf()
+                //    .SingleInstance();
+#endif
             });
         }
     }
