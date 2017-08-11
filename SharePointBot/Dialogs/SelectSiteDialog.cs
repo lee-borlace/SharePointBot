@@ -14,6 +14,13 @@ namespace SharePointBot.Dialogs
     [Serializable]
     public class SelectSiteDialog : IDialog<object>
     {
+        protected string _siteTitleOrAlias;
+
+        public SelectSiteDialog(string siteTitleOrAlias)
+        {
+            _siteTitleOrAlias = siteTitleOrAlias;
+        }
+
         public async Task StartAsync(IDialogContext context)
         {
             using (var scope = Conversation.Container.BeginLifetimeScope())
@@ -23,15 +30,15 @@ namespace SharePointBot.Dialogs
                 await service.SetCurrentSite(
                     new BotSite
                     {
-                        Alias = "health and fitness",
+                        Alias = _siteTitleOrAlias,
                         Id = Guid.NewGuid(),
-                        Title = "My h&f site",
+                        Title = _siteTitleOrAlias,
                         Url = "/sites/whatevs"
                     }
                 );
             }
 
-            await context.PostAsync("Site selected.");
+            await context.PostAsync($"Site {_siteTitleOrAlias} selected.");
 
             context.Done("All done!");
         }

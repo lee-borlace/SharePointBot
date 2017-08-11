@@ -36,6 +36,7 @@ namespace SharePointBot
         public static class FieldNames
         {
             public const string BotContext = "botContext";
+            public const string SiteTitleOrAlias = "siteTitleOrAlias";
         }
 
         public static class RegexGroupNames
