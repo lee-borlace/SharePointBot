@@ -13,8 +13,8 @@ using System.Text.RegularExpressions;
 using Microsoft.Bot.Builder.ConnectorEx;
 using Autofac;
 using SharePointBot.AutofacModules;
-using SharePointBot.Helpers;
 using SharePointBot.Model;
+using SharePointBot.Services.Interfaces;
 
 namespace SharePointBot.Dialogs
 {
@@ -44,7 +44,7 @@ namespace SharePointBot.Dialogs
                 if (match.Success)
                 {
                     foundMatch = true;
-                    await AuthenticationHelper.ForwardToLoginDialog(context, message, LoginCallBack);
+                    await scope.Resolve<IAuthenticationService>().ForwardToLoginDialog(context, message, LoginCallBack);
                 }
 
                 // Log out.
@@ -52,7 +52,7 @@ namespace SharePointBot.Dialogs
                 if (match.Success)
                 {
                     foundMatch = true;
-                    await AuthenticationHelper.LogOut(context);
+                    await scope.Resolve<IAuthenticationService>().LogOut(context);
                 }
 
                 // Select site.

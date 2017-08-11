@@ -6,6 +6,7 @@ using SharePointBot.Model;
 using Microsoft.Bot.Connector;
 using Microsoft.Bot.Builder.Dialogs;
 using System.Threading.Tasks;
+using SharePointBot.Services.Interfaces;
 
 namespace SharePointBot.Services
 {

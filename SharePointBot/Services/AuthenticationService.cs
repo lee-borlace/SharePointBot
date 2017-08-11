@@ -4,6 +4,7 @@ using BotAuth.Dialogs;
 using BotAuth.Models;
 using Microsoft.Bot.Builder.ConnectorEx;
 using Microsoft.Bot.Builder.Dialogs;
+using SharePointBot.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -13,11 +14,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 
-namespace SharePointBot.Helpers
+
+namespace SharePointBot.Services
 {
-    public class AuthenticationHelper
+    public class AuthenticationService : IAuthenticationService
     {
-        public static AuthenticationOptions GetDefaultOffice365Otions()
+        public AuthenticationOptions GetDefaultOffice365Options()
         {
             return new AuthenticationOptions()
             {
@@ -28,24 +30,23 @@ namespace SharePointBot.Helpers
             };
         }
 
-        public static async Task ForwardToLoginDialog(IDialogContext context, object message, ResumeAfter<AuthResult> loginCallBack)
+        public async Task ForwardToLoginDialog(IDialogContext context, object message, ResumeAfter<AuthResult> loginCallBack)
         {
-            var options = AuthenticationHelper.GetDefaultOffice365Otions();
+            var options = GetDefaultOffice365Options();
             options.RedirectUrl = ConfigurationManager.AppSettings["aad:Callback"];
             await context.Forward(new AuthDialog(new MSALAuthProvider(), options), loginCallBack, message, CancellationToken.None);
         }
 
-        public static async Task LogOut(IDialogContext context)
+        public async Task LogOut(IDialogContext context)
         {
             // We will store the conversation reference in the callback URL. When Office 365 logs out it will hit the LogOut endpoint and pass
             // that reference. That event signifies that log out has completed, and will prompt a message from the bot to the user to indicate that fact.
             var conversationRef = context.Activity.ToConversationReference();
 
-            var options = AuthenticationHelper.GetDefaultOffice365Otions();
+            var options = GetDefaultOffice365Options();
             options.RedirectUrl = $"{ConfigurationManager.AppSettings["PostLogoutUrl"]}?conversationRef={UrlToken.Encode(conversationRef)}";
 
             await new MSALAuthProvider().Logout(options, context);
         }
-
     }
 }

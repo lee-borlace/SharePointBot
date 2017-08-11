@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SharePointBot.Services
+namespace SharePointBot.Services.Interfaces
 {
     interface ISharePointBotStateService
     {

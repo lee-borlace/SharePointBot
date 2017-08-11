@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using Microsoft.Bot.Builder.Dialogs;
 using SharePointBot.Services;
+using SharePointBot.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,6 +20,7 @@ namespace SharePointBot.AutofacModules
 
             builder.RegisterType<SharePointBotStateService>().As<ISharePointBotStateService>();
             builder.RegisterType<SharePointService>().As<ISharePointService>();
+            builder.RegisterType<AuthenticationService>().As<IAuthenticationService>().SingleInstance();
         }
     }
 }

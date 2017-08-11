@@ -9,6 +9,7 @@ using SharePointBot.Model;
 using Autofac;
 using Microsoft.Bot.Builder.Internals.Fibers;
 using SharePointBot.AutofacModules;
+using SharePointBot.Services.Interfaces;
 
 namespace SharePointBot.Dialogs
 {
