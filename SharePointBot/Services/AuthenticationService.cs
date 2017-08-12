@@ -1,4 +1,5 @@
 ﻿using BotAuth;
+using BotAuth.AADv1;
 using BotAuth.AADv2;
 using BotAuth.Dialogs;
 using BotAuth.Models;
@@ -25,10 +26,11 @@ namespace SharePointBot.Services
         {
             return new AuthenticationOptions()
             {
-                Authority = ConfigurationManager.AppSettings["aad:Authority"],
+                Authority = "https://login.microsoftonline.com/common",
                 ClientId = ConfigurationManager.AppSettings["MicrosoftAppId"],
                 ClientSecret = ConfigurationManager.AppSettings["MicrosoftAppPassword"],
-                Scopes = new string[] { "User.Read" }
+                Scopes = new string[] { "User.Read", "Sites.Read.All", "Sites.ReadWrite.All" },
+                ResourceId = "https://lee79.sharepoint.com",
             };
         }
 
@@ -36,7 +38,7 @@ namespace SharePointBot.Services
         {
             var options = GetDefaultOffice365Options();
             options.RedirectUrl = ConfigurationManager.AppSettings["aad:Callback"];
-            await context.Forward(new AuthDialog(new MSALAuthProvider(), options), loginCallBack, message, CancellationToken.None);
+            await context.Forward(new AuthDialog(new ADALAuthProvider(), options), loginCallBack, message, CancellationToken.None);
         }
 
         public async Task LogOut(IDialogContext context)
@@ -48,14 +50,15 @@ namespace SharePointBot.Services
             var options = GetDefaultOffice365Options();
             options.RedirectUrl = $"{ConfigurationManager.AppSettings["PostLogoutUrl"]}?conversationRef={UrlToken.Encode(conversationRef)}";
 
-            await new MSALAuthProvider().Logout(options, context);
+            await new ADALAuthProvider().Logout(options, context);
+            
         }
 
         public async Task<AuthResult> GetAccessToken(IDialogContext context)
         {
             var options = GetDefaultOffice365Options();
             options.RedirectUrl = ConfigurationManager.AppSettings["aad:Callback"];
-            return await new MSALAuthProvider().GetAccessToken(options, context);
+            return await new ADALAuthProvider().GetAccessToken(options, context);
         }
     }
 }

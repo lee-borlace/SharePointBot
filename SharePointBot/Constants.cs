@@ -55,6 +55,7 @@ namespace SharePointBot
         public static class GraphApiUrls
         {
             public const string RootSite = "https://graph.microsoft.com/v1.0/sites/root";
+            public const string Search = "https://lee79.sharepoint.com/_api/search/query?query_parameter=lee";
         }
 
         public static class RestApi

@@ -1,5 +1,6 @@
 ﻿using BotAuth;
 using BotAuth.Models;
+using Microsoft.SharePoint.Client;
 using SharePointBot.Model;
 using SharePointBot.Services.Interfaces;
 using System;
@@ -22,15 +23,42 @@ namespace SharePointBot.Services
         /// <returns>A BotSite representing the web if it exists, otherwise null.</returns>
         public async Task<BotSite> GetWebByTitle(string title, AuthResult auth)
         {
-            var json = await new HttpClient().GetWithAuthAsync(auth.AccessToken, Constants.GraphApiUrls.RootSite);
+            // var json = await new HttpClient().GetWithAuthAsync(auth.AccessToken, Constants.GraphApiUrls.Search);
 
-            return new BotSite
+            using (var context = new ClientContext("https://lee79.sharepoint.com"))
             {
-                Alias = string.Empty,
-                Id = Guid.Empty,
-                Title = json.Value<string>(Constants.RestApi.SiteName),
-                Url = json.Value<string>(Constants.RestApi.SiteUrl)
-            };
+                context.ExecutingWebRequest += (object sender, WebRequestEventArgs e) =>
+                {
+                    e.WebRequestExecutor.RequestHeaders["Authorization"] = "Bearer " + auth.AccessToken;
+                };
+
+                List tasksList = context.Web.Lists.GetByTitle("Reusable Content");
+                var listItems = tasksList.GetItems(CamlQuery.CreateAllItemsQuery());
+
+                context.Load(listItems);
+                context.ExecuteQuery();
+
+                foreach (ListItem item in listItems)
+                {
+
+                }
+
+                //return new BotSite
+                //{
+                //    Alias = string.Empty,
+                //    Id = Guid.Empty,
+                //    Title = json.Value<string>(Constants.RestApi.SiteName),
+                //    Url = json.Value<string>(Constants.RestApi.SiteUrl)
+                //};
+
+                return new BotSite
+                {
+                    Alias = string.Empty,
+                    Id = Guid.Empty,
+                    Title = "uuuuu",
+                    Url = "u2u2u2u2u2u2u2u2u2"
+                };
+            }
         }
     }
 }
