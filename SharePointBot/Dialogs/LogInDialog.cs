@@ -71,7 +71,7 @@ namespace SharePointBot.Dialogs
             // User didn't type "last".
             else
             {
-                if (Regex.IsMatch(userResponse, Constants.RegexMisc.Url, RegexOptions.IgnoreCase))
+                if (Regex.IsMatch(userResponse, Constants.RegexMisc.SPOTenantUrl, RegexOptions.IgnoreCase))
                 {
                     context.PrivateConversationData.SetValue<string>(Constants.StateKeys.LastLoggedInSiteCollection, userResponse);
                     await _authenticationService.ForwardToBotAuthLoginDialog(userResponse, context, context.Activity as IMessageActivity, AfterLogOn);

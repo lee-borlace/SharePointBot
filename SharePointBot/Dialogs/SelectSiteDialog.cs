@@ -72,7 +72,16 @@ namespace SharePointBot.Dialogs
         /// <returns></returns>
         private async Task AfterLogOn(IDialogContext context, IAwaitable<AuthResult> result)
         {
-            await SelectSite(context);
+            if (await result != null)
+            {
+                await SelectSite(context);
+            }
+            else
+            {
+                await context.PostAsync(Constants.Responses.LogInFailed);
+                context.Done<BotSite>(null);
+            }
+            
         }
 
 

@@ -106,6 +106,7 @@
     <Compile Include="Infrastructure\DialogTestBase.cs" />
     <Compile Include="Infrastructure\FiberTestBase.cs" />
     <Compile Include="Infrastructure\MockConnectorFactory.cs" />
+    <Compile Include="RegexTests.cs" />
     <Compile Include="UtteranceRegexTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
