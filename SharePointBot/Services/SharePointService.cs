@@ -2,6 +2,7 @@
 using BotAuth.Models;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.SharePoint.Client;
+using Microsoft.SharePoint.Client.Search.Query;
 using SharePointBot.Model;
 using SharePointBot.Services.Interfaces;
 using System;
@@ -28,7 +29,7 @@ namespace SharePointBot.Services
             string lastSiteCollectionUrl = null;
             if(!context.PrivateConversationData.TryGetValue<string>(Constants.StateKeys.LastLoggedInTenantUrl, out lastSiteCollectionUrl))
             {
-                throw new InvalidOperationException("Could not find ");
+                throw new InvalidOperationException("Could not find current tenant URL in bot state.");
             }
 
             using (var clientContext = new ClientContext(lastSiteCollectionUrl))
@@ -38,24 +39,13 @@ namespace SharePointBot.Services
                     e.WebRequestExecutor.RequestHeaders["Authorization"] = "Bearer " + auth.AccessToken;
                 };
 
-                List tasksList = clientContext.Web.Lists.GetByTitle("Reusable Content");
-                var listItems = tasksList.GetItems(CamlQuery.CreateAllItemsQuery());
 
-                clientContext.Load(listItems);
+                KeywordQuery keywordQuery = new KeywordQuery(clientContext);
+                keywordQuery.QueryText = "lee";
+                SearchExecutor searchExecutor = new SearchExecutor(clientContext);
+                ClientResult<ResultTableCollection> results = searchExecutor.ExecuteQuery(keywordQuery);
                 clientContext.ExecuteQuery();
-
-                foreach (ListItem item in listItems)
-                {
-
-                }
-
-                //return new BotSite
-                //{
-                //    Alias = string.Empty,
-                //    Id = Guid.Empty,
-                //    Title = json.Value<string>(Constants.RestApi.SiteName),
-                //    Url = json.Value<string>(Constants.RestApi.SiteUrl)
-                //};
+                
 
                 return new BotSite
                 {
