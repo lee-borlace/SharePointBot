@@ -46,18 +46,21 @@ namespace SharePointBot.Dialogs
         /// <returns></returns>
         public async Task StartAsync(IDialogContext context)
         {
-            // Make sure we have an access token before trying to select site.
-            var accessToken = await _authenticationService.GetAccessToken(context);
+            using (var scope = Conversation.Container.BeginLifetimeScope())
+            {
+                // Make sure we have an access token before trying to select site.
+                var accessToken = await _authenticationService.GetAccessToken(context);
 
-            // No access token - redirect to login dialog first.
-            if (accessToken == null)
-            {
-                await context.PostAsync(Constants.Responses.LogOnFirst);
-                await _authenticationService.ForwardToLoginDialog(context, context.Activity as IMessageActivity, AfterLogOn);
-            }
-            else
-            {
-                await SelectSite(context);
+                // No access token - redirect to login dialog first.
+                if (accessToken == null)
+                {
+                    await context.PostAsync(Constants.Responses.LogOnFirst);
+                    context.Call(scope.Resolve<LogInDialog>(), AfterLogOn);
+                }
+                else
+                {
+                    await SelectSite(context);
+                }
             }
         }
 

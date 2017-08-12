@@ -13,7 +13,15 @@ namespace SharePointBot.Services.Interfaces
     {
         AuthenticationOptions GetDefaultOffice365Options();
 
-        Task ForwardToLoginDialog(IDialogContext context, IMessageActivity message, ResumeAfter<AuthResult> loginCallBack);
+        /// <summary>
+        /// Forwards to BotAuth login dialog.
+        /// </summary>
+        /// <param name="siteCollectionUrl">The site collection URL.</param>
+        /// <param name="context">The context.</param>
+        /// <param name="message">The message.</param>
+        /// <param name="loginCallBack">The login call back.</param>
+        /// <returns></returns>
+        Task ForwardToBotAuthLoginDialog(string siteCollectionUrl, IDialogContext context, IMessageActivity message, ResumeAfter<AuthResult> loginCallBack);
 
         Task LogOut(IDialogContext context);
 

@@ -30,14 +30,23 @@ namespace SharePointBot.Services
                 ClientId = ConfigurationManager.AppSettings["MicrosoftAppId"],
                 ClientSecret = ConfigurationManager.AppSettings["MicrosoftAppPassword"],
                 Scopes = new string[] { "User.Read", "Sites.Read.All", "Sites.ReadWrite.All" },
-                ResourceId = "https://lee79.sharepoint.com",
             };
         }
 
-        public async Task ForwardToLoginDialog(IDialogContext context, IMessageActivity message, ResumeAfter<AuthResult> loginCallBack)
+        /// <summary>
+        /// Forwards to BotAuth login dialog.
+        /// </summary>
+        /// <param name="siteCollectionUrl">The site collection URL.</param>
+        /// <param name="context">The context.</param>
+        /// <param name="message">The message.</param>
+        /// <param name="loginCallBack">The login call back.</param>
+        /// <returns></returns>
+        public async Task ForwardToBotAuthLoginDialog(string siteCollectionUrl, IDialogContext context, IMessageActivity message, ResumeAfter<AuthResult> loginCallBack)
         {
             var options = GetDefaultOffice365Options();
             options.RedirectUrl = ConfigurationManager.AppSettings["aad:Callback"];
+            options.ResourceId = siteCollectionUrl;
+
             await context.Forward(new AuthDialog(new ADALAuthProvider(), options), loginCallBack, message, CancellationToken.None);
         }
 
@@ -50,6 +59,12 @@ namespace SharePointBot.Services
             var options = GetDefaultOffice365Options();
             options.RedirectUrl = $"{ConfigurationManager.AppSettings["PostLogoutUrl"]}?conversationRef={UrlToken.Encode(conversationRef)}";
 
+            // We need to know the resource ID. This *should be* stored in bot state from when user logged in.
+            string lastSiteCollectionUrl = null;
+            context.PrivateConversationData.TryGetValue<string>(Constants.StateKeys.LastLoggedInSiteCollection, out lastSiteCollectionUrl);
+            options.ResourceId = lastSiteCollectionUrl;
+
+
             await new ADALAuthProvider().Logout(options, context);
             
         }
@@ -58,6 +73,12 @@ namespace SharePointBot.Services
         {
             var options = GetDefaultOffice365Options();
             options.RedirectUrl = ConfigurationManager.AppSettings["aad:Callback"];
+
+            // We need to know the resource ID. This *should be* stored in bot state from when user logged in.
+            string lastSiteCollectionUrl = null;
+            context.PrivateConversationData.TryGetValue<string>(Constants.StateKeys.LastLoggedInSiteCollection, out lastSiteCollectionUrl);
+            options.ResourceId = lastSiteCollectionUrl;
+
             return await new ADALAuthProvider().GetAccessToken(options, context);
         }
     }

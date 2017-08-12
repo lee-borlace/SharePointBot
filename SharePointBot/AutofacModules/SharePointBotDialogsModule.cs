@@ -17,6 +17,7 @@ namespace SharePointBot.AutofacModules
             builder.RegisterType<RootDialog>().As<IDialog<object>>().InstancePerDependency();
             builder.RegisterType<GetSiteDialog>().AsSelf();
             builder.RegisterType<SelectSiteDialog>().AsSelf();
+            builder.RegisterType<LogInDialog>().AsSelf();
         }
     }
 }
