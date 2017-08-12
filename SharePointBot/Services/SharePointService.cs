@@ -1,5 +1,6 @@
 ﻿using BotAuth;
 using BotAuth.Models;
+using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.SharePoint.Client;
 using SharePointBot.Model;
 using SharePointBot.Services.Interfaces;
@@ -21,22 +22,27 @@ namespace SharePointBot.Services
         /// <param name="title"></param>
         /// <param name="accessToken"></param>
         /// <returns>A BotSite representing the web if it exists, otherwise null.</returns>
-        public async Task<BotSite> GetWebByTitle(string title, AuthResult auth)
+        public async Task<BotSite> GetWebByTitle(string title, AuthResult auth, IBotContext context)
         {
-            // var json = await new HttpClient().GetWithAuthAsync(auth.AccessToken, Constants.GraphApiUrls.Search);
-
-            using (var context = new ClientContext("https://lee79.sharepoint.com"))
+            // We need to know the resource ID. This *should be* stored in bot state from when user logged in.
+            string lastSiteCollectionUrl = null;
+            if(!context.PrivateConversationData.TryGetValue<string>(Constants.StateKeys.LastLoggedInTenantUrl, out lastSiteCollectionUrl))
             {
-                context.ExecutingWebRequest += (object sender, WebRequestEventArgs e) =>
+                throw new InvalidOperationException("Could not find ");
+            }
+
+            using (var clientContext = new ClientContext(lastSiteCollectionUrl))
+            {
+                clientContext.ExecutingWebRequest += (object sender, WebRequestEventArgs e) =>
                 {
                     e.WebRequestExecutor.RequestHeaders["Authorization"] = "Bearer " + auth.AccessToken;
                 };
 
-                List tasksList = context.Web.Lists.GetByTitle("Reusable Content");
+                List tasksList = clientContext.Web.Lists.GetByTitle("Reusable Content");
                 var listItems = tasksList.GetItems(CamlQuery.CreateAllItemsQuery());
 
-                context.Load(listItems);
-                context.ExecuteQuery();
+                clientContext.Load(listItems);
+                clientContext.ExecuteQuery();
 
                 foreach (ListItem item in listItems)
                 {

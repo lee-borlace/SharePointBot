@@ -30,17 +30,17 @@ namespace SharePointBot
 
         public static class Responses
         {
-            public static string LogIntoWhichSiteCollection = "What's the full URL of the SPO tenant you want to log into? This should be the root tenant name without any site collection paths, i.e. https://tenantName.sharepoint.com";
+            public static string LogIntoWhichTenant = "What's the full URL of the SPO tenant you want to log into? This should be the root tenant name without any site collection paths, i.e. https://tenantName.sharepoint.com";
             public static string LastSiteCollection = " To log into the last site collection you used ({0}), you can say 'last'.";
             public static string SelectWhichSite = "What's the title or alias of the site you want to select?";
             public static string LogOnFirst = "You'll need to log on first.";
-            public static string InvalidSiteCollectionURL = "That didn't look like a valid tenant URL e.g. https://tenantName.sharepoint.com. You're not logged in yet.";
+            public static string InvalidTenantURL = "That didn't look like a valid tenant URL e.g. https://tenantName.sharepoint.com. You're not logged in yet.";
             public static string LogInFailed = "Sorry, I couldn't log you in.";
         }
 
         public static class StateKeys
         {
-            public const string LastLoggedInSiteCollection = "SPBot_LoggedInSiteCollection";
+            public const string LastLoggedInTenantUrl = "SPBot_LoggedInTenantUrl";
             public const string CurrentSite = "SPBot_CurrentSite";
         }
 
@@ -67,7 +67,6 @@ namespace SharePointBot
         public static class GraphApiUrls
         {
             public const string RootSite = "https://graph.microsoft.com/v1.0/sites/root";
-            public const string Search = "https://lee79.sharepoint.com/_api/search/query?query_parameter=lee";
         }
 
         public static class RestApi

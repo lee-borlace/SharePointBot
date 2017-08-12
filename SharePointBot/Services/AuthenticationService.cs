@@ -61,7 +61,7 @@ namespace SharePointBot.Services
 
             // We need to know the resource ID. This *should be* stored in bot state from when user logged in.
             string lastSiteCollectionUrl = null;
-            context.PrivateConversationData.TryGetValue<string>(Constants.StateKeys.LastLoggedInSiteCollection, out lastSiteCollectionUrl);
+            context.PrivateConversationData.TryGetValue<string>(Constants.StateKeys.LastLoggedInTenantUrl, out lastSiteCollectionUrl);
             options.ResourceId = lastSiteCollectionUrl;
 
 
@@ -76,7 +76,7 @@ namespace SharePointBot.Services
 
             // We need to know the resource ID. This *should be* stored in bot state from when user logged in.
             string lastSiteCollectionUrl = null;
-            context.PrivateConversationData.TryGetValue<string>(Constants.StateKeys.LastLoggedInSiteCollection, out lastSiteCollectionUrl);
+            context.PrivateConversationData.TryGetValue<string>(Constants.StateKeys.LastLoggedInTenantUrl, out lastSiteCollectionUrl);
             options.ResourceId = lastSiteCollectionUrl;
 
             return await new ADALAuthProvider().GetAccessToken(options, context);

@@ -1,4 +1,5 @@
 ﻿using BotAuth.Models;
+using Microsoft.Bot.Builder.Dialogs;
 using SharePointBot.Model;
 using System;
 using System.Collections.Generic;
@@ -19,6 +20,6 @@ namespace SharePointBot.Services.Interfaces
         /// <param name="title"></param>
         /// <param name="auth"></param>
         /// <returns>A BotSite representing the web if it exists, otherwise null.</returns>
-        Task<BotSite> GetWebByTitle(string title, AuthResult auth);
+        Task<BotSite> GetWebByTitle(string title, AuthResult auth, IBotContext context);
     }
 }

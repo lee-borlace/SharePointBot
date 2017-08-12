@@ -132,7 +132,7 @@ namespace SharePointBot.Dialogs
         /// <returns></returns>
         private async Task GetSpecifiedSite(IDialogContext context)
         {
-            _site = await _sharePointService.GetWebByTitle(_siteTitleOrAlias, await _authenticationService.GetAccessToken(context));
+            _site = await _sharePointService.GetWebByTitle(_siteTitleOrAlias, await _authenticationService.GetAccessToken(context), context);
         }
 
         /// <summary>
