@@ -36,16 +36,16 @@ namespace SharePointBot.Services
         /// <summary>
         /// Forwards to BotAuth login dialog.
         /// </summary>
-        /// <param name="siteCollectionUrl">The site collection URL.</param>
+        /// <param name="tenantUrl">The tenant URL.</param>
         /// <param name="context">The context.</param>
         /// <param name="message">The message.</param>
         /// <param name="loginCallBack">The login call back.</param>
         /// <returns></returns>
-        public async Task ForwardToBotAuthLoginDialog(string siteCollectionUrl, IDialogContext context, IMessageActivity message, ResumeAfter<AuthResult> loginCallBack)
+        public async Task ForwardToBotAuthLoginDialog(string tenantUrl, IDialogContext context, IMessageActivity message, ResumeAfter<AuthResult> loginCallBack)
         {
             var options = GetDefaultOffice365Options();
             options.RedirectUrl = ConfigurationManager.AppSettings["aad:Callback"];
-            options.ResourceId = siteCollectionUrl;
+            options.ResourceId = tenantUrl;
 
             await context.Forward(new AuthDialog(new ADALAuthProvider(), options), loginCallBack, message, CancellationToken.None);
         }
@@ -61,7 +61,7 @@ namespace SharePointBot.Services
 
             // We need to know the resource ID. This *should be* stored in bot state from when user logged in.
             string lastSiteCollectionUrl = null;
-            context.PrivateConversationData.TryGetValue<string>(Constants.StateKeys.LastLoggedInTenantUrl, out lastSiteCollectionUrl);
+            context.PrivateConversationData.TryGetValue<string>(Constants.StateKeys.LastLoggedInSiteCollectionUrl, out lastSiteCollectionUrl);
             options.ResourceId = lastSiteCollectionUrl;
 
 
@@ -74,10 +74,10 @@ namespace SharePointBot.Services
             var options = GetDefaultOffice365Options();
             options.RedirectUrl = ConfigurationManager.AppSettings["aad:Callback"];
 
-            // We need to know the resource ID. This *should be* stored in bot state from when user logged in.
-            string lastSiteCollectionUrl = null;
-            context.PrivateConversationData.TryGetValue<string>(Constants.StateKeys.LastLoggedInTenantUrl, out lastSiteCollectionUrl);
-            options.ResourceId = lastSiteCollectionUrl;
+            // We need to know the resource ID. This should be stored in bot state from when user logged in.
+            string lastTenantUrl = null;
+            context.PrivateConversationData.TryGetValue<string>(Constants.StateKeys.LastLoggedInTenantUrl, out lastTenantUrl);
+            options.ResourceId = lastTenantUrl;
 
             return await new ADALAuthProvider().GetAccessToken(options, context);
         }

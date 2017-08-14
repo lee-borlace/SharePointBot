@@ -19,7 +19,8 @@ namespace SharePointBot
       
         public static class RegexMisc
         {
-            public const string Url = @"https ?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)";
+            public const string GeneralUrl = @"https ?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)";
+            public const string SiteCollectionUrl = @"^\s*(?<tenantUrl>https:\/\/[-a-zA-Z0-9@:%._\+~#=]+\.sharepoint\.com)(\/[a-zA-Z0-9]+\/[-a-zA-Z0-9@:%._\+~#=]+)?\s*$";
             public const string SPOTenantUrl = @"^\s*https:\/\/[-a-zA-Z0-9@:%._\+~#=]+\.sharepoint\.com\s*$";
         }
 
@@ -30,17 +31,18 @@ namespace SharePointBot
 
         public static class Responses
         {
-            public static string LogIntoWhichTenant = "What's the full URL of the SPO tenant you want to log into? This should be the root tenant name without any site collection paths, i.e. https://tenantName.sharepoint.com";
+            public static string LogIntoWhichSiteCollection = "What's the URL of the site collection you want to log into, e.g. https://tenantName.sharepoint.com/sites/siteCollection";
             public static string LastSiteCollection = " To log into the last site collection you used ({0}), you can say 'last'.";
             public static string SelectWhichSite = "What's the title or alias of the site you want to select?";
             public static string LogOnFirst = "You'll need to log on first.";
-            public static string InvalidTenantURL = "That didn't look like a valid tenant URL e.g. https://tenantName.sharepoint.com. You're not logged in yet.";
+            public static string InvalidSiteCollectionUrl = "That didn't look like a valid site collection URL e.g. https://tenantName.sharepoint.com/sites/siteCollection. You're not logged in yet.";
             public static string LogInFailed = "Sorry, I couldn't log you in.";
         }
 
         public static class StateKeys
         {
             public const string LastLoggedInTenantUrl = "SPBot_LoggedInTenantUrl";
+            public const string LastLoggedInSiteCollectionUrl = "SPBot_LoggedInSiteCollectionUrl";
             public const string CurrentSite = "SPBot_CurrentSite";
         }
 
@@ -56,6 +58,7 @@ namespace SharePointBot
         public static class RegexGroupNames
         {
             public const string SiteTitleOrAlias = "siteTitleOrAlias";
+            public const string TenantUrl = "tenantUrl";
         }
 
         public static class Misc

@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
 
@@ -27,7 +28,7 @@ namespace SharePointBot.Services
         {
             // We need to know the resource ID. This *should be* stored in bot state from when user logged in.
             string lastSiteCollectionUrl = null;
-            if(!context.PrivateConversationData.TryGetValue<string>(Constants.StateKeys.LastLoggedInTenantUrl, out lastSiteCollectionUrl))
+            if(!context.PrivateConversationData.TryGetValue<string>(Constants.StateKeys.LastLoggedInSiteCollectionUrl, out lastSiteCollectionUrl))
             {
                 throw new InvalidOperationException("Could not find current tenant URL in bot state.");
             }
@@ -55,6 +56,25 @@ namespace SharePointBot.Services
                     Url = "u2u2u2u2u2u2u2u2u2"
                 };
             }
+        }
+
+        /// <summary>
+        /// Gets the tenant URL from site collection URL.
+        /// </summary>
+        /// <param name="siteCollectionUrl">The site collection URL.</param>
+        /// <returns></returns>
+        public string GetTenantUrlFromSiteCollectionUrl(string siteCollectionUrl)
+        {
+            string retVal = null;
+
+            var match = Regex.Match(siteCollectionUrl, Constants.RegexMisc.SiteCollectionUrl, RegexOptions.IgnoreCase, Regex.InfiniteMatchTimeout);
+
+            if (match.Success)
+            {
+                retVal = match.Groups[Constants.RegexGroupNames.TenantUrl].Value;
+            }
+
+            return retVal;
         }
     }
 }

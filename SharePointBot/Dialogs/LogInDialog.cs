@@ -14,19 +14,22 @@ namespace SharePointBot.Dialogs
     public class LogInDialog : IDialog<AuthResult>
     {
         protected IAuthenticationService _authenticationService;
+        protected ISharePointService _sharePointService;
 
         protected string _lastSiteCollectionUrl;
 
-        public LogInDialog(IAuthenticationService authenticationService)
+        public LogInDialog(IAuthenticationService authenticationService, ISharePointService sharePointService)
         {
             SetField.NotNull(out _authenticationService, nameof(_authenticationService), authenticationService);
+            SetField.NotNull(out _sharePointService, nameof(_sharePointService), sharePointService);
         }
 
         public async Task StartAsync(IDialogContext context)
         {
-            string prompt = Constants.Responses.LogIntoWhichTenant;
+            // Build up prompt depending on whether previous site collection URL is recorded in state.
+            string prompt = Constants.Responses.LogIntoWhichSiteCollection;
             _lastSiteCollectionUrl = null;
-            var lastSiteCollectionUrlPresent = context.PrivateConversationData.TryGetValue<string>(Constants.StateKeys.LastLoggedInTenantUrl, out _lastSiteCollectionUrl);
+            var lastSiteCollectionUrlPresent = context.PrivateConversationData.TryGetValue<string>(Constants.StateKeys.LastLoggedInSiteCollectionUrl, out _lastSiteCollectionUrl);
 
             if (lastSiteCollectionUrlPresent)
             {
@@ -51,37 +54,44 @@ namespace SharePointBot.Dialogs
         {
             var userResponse = await result;
 
+            var valid = false;
+
+            string siteCollectionUrl = string.Empty;
+
             // User typed "last"
             if (Regex.IsMatch(userResponse, Constants.UtteranceRegexes.LastSiteCollectionUrl))
             {
                 // Last URL is present - use it.
                 if (!string.IsNullOrEmpty(_lastSiteCollectionUrl))
                 {
-                    context.PrivateConversationData.SetValue<string>(Constants.StateKeys.LastLoggedInTenantUrl, _lastSiteCollectionUrl);
-                    await _authenticationService.ForwardToBotAuthLoginDialog(_lastSiteCollectionUrl, context, context.Activity as IMessageActivity, AfterLogOn);
-                }
-                // Last URL is not present - "last" isn't a valid response.
-                else
-                {
-                    // TODO : Don't just quit here, instead allow X number of retries.
-                    await context.PostAsync(Constants.Responses.InvalidTenantURL);
-                    context.Done<AuthResult>(null);
+                    valid = true;
+                    siteCollectionUrl = _lastSiteCollectionUrl;
                 }
             }
             // User didn't type "last".
             else
             {
-                if (Regex.IsMatch(userResponse, Constants.RegexMisc.SPOTenantUrl, RegexOptions.IgnoreCase))
+                if (Regex.IsMatch(userResponse, Constants.RegexMisc.SiteCollectionUrl, RegexOptions.IgnoreCase))
                 {
-                    context.PrivateConversationData.SetValue<string>(Constants.StateKeys.LastLoggedInTenantUrl, userResponse);
-                    await _authenticationService.ForwardToBotAuthLoginDialog(userResponse, context, context.Activity as IMessageActivity, AfterLogOn);
+                    valid = true;
+                    siteCollectionUrl = userResponse;
                 }
-                else
-                {
-                    // TODO : Don't just quit here, instead allow X number of retries.
-                    await context.PostAsync(Constants.Responses.InvalidTenantURL);
-                    context.Done<AuthResult>(null);
-                }
+            }
+
+            if (valid)
+            {
+                context.PrivateConversationData.SetValue<string>(Constants.StateKeys.LastLoggedInSiteCollectionUrl, siteCollectionUrl);
+
+                var tenantUrl = _sharePointService.GetTenantUrlFromSiteCollectionUrl(siteCollectionUrl);
+                context.PrivateConversationData.SetValue<string>(Constants.StateKeys.LastLoggedInTenantUrl, tenantUrl);
+
+                await _authenticationService.ForwardToBotAuthLoginDialog(tenantUrl, context, context.Activity as IMessageActivity, AfterLogOn);
+            }
+            else
+            {
+                // TODO : Don't just quit here, instead allow X number of retries.
+                await context.PostAsync(Constants.Responses.InvalidSiteCollectionUrl);
+                context.Done<AuthResult>(null);
             }
         }
 

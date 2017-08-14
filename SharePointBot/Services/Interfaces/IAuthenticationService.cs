@@ -16,12 +16,12 @@ namespace SharePointBot.Services.Interfaces
         /// <summary>
         /// Forwards to BotAuth login dialog.
         /// </summary>
-        /// <param name="siteCollectionUrl">The site collection URL.</param>
+        /// <param name="tenantUrl">The tenant URL.</param>
         /// <param name="context">The context.</param>
         /// <param name="message">The message.</param>
         /// <param name="loginCallBack">The login call back.</param>
         /// <returns></returns>
-        Task ForwardToBotAuthLoginDialog(string siteCollectionUrl, IDialogContext context, IMessageActivity message, ResumeAfter<AuthResult> loginCallBack);
+        Task ForwardToBotAuthLoginDialog(string tenantUrl, IDialogContext context, IMessageActivity message, ResumeAfter<AuthResult> loginCallBack);
 
         Task LogOut(IDialogContext context);
 
