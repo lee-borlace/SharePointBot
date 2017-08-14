@@ -96,7 +96,16 @@ namespace SharePointBot.Dialogs
             if (!string.IsNullOrEmpty(_siteTitleOrAlias))
             {
                 await GetSpecifiedSite(context);
-                await StoreSiteInBotState(context);
+
+                if (_site != null)
+                {
+                    await StoreSiteInBotState(context);
+                }
+                else
+                {
+                    await context.PostAsync(Constants.Responses.CouldntFindSite);
+                    context.Done<BotSite>(null);
+                }
             }
             // Otherwise prompt, then check and store.
             else

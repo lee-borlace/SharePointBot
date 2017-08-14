@@ -105,10 +105,11 @@ namespace SharePointBot.Services
             await _botState.SetUserDataAsync(_activity.ChannelId, _activity.From.Id, botdata);
         }
 
+        public BotList CurrentList { get { throw new NotImplementedException(); } set { throw new NotImplementedException(); } }
 
-        public BotList CurrentList { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public IEnumerable<BotSite> FavouriteSites { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public IEnumerable<BotList> FavouriteLists { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public IEnumerable<BotSite> FavouriteSites { get { throw new NotImplementedException(); } set { throw new NotImplementedException(); } }
+
+        public IEnumerable<BotList> FavouriteLists { get { throw new NotImplementedException(); } set { throw new NotImplementedException(); } }
 
     }
 }

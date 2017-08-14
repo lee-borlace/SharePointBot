@@ -7,6 +7,7 @@ using SharePointBot.Model;
 using SharePointBot.Services.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.Text.RegularExpressions;
@@ -28,7 +29,7 @@ namespace SharePointBot.Services
         {
             // We need to know the resource ID. This *should be* stored in bot state from when user logged in.
             string lastSiteCollectionUrl = null;
-            if(!context.PrivateConversationData.TryGetValue<string>(Constants.StateKeys.LastLoggedInSiteCollectionUrl, out lastSiteCollectionUrl))
+            if (!context.PrivateConversationData.TryGetValue<string>(Constants.StateKeys.LastLoggedInSiteCollectionUrl, out lastSiteCollectionUrl))
             {
                 throw new InvalidOperationException("Could not find current tenant URL in bot state.");
             }
@@ -42,20 +43,35 @@ namespace SharePointBot.Services
 
 
                 KeywordQuery keywordQuery = new KeywordQuery(clientContext);
-                keywordQuery.QueryText = "lee";
+                keywordQuery.TrimDuplicates = true;
+                keywordQuery.QueryText = $"{title}  (contentclass:STS_Web OR contentclass:STS_Site)";
                 SearchExecutor searchExecutor = new SearchExecutor(clientContext);
                 ClientResult<ResultTableCollection> results = searchExecutor.ExecuteQuery(keywordQuery);
                 clientContext.ExecuteQuery();
-                
 
-                return new BotSite
+                if (results.Value.Count > 0)
                 {
-                    Alias = string.Empty,
-                    Id = Guid.Empty,
-                    Title = "uuuuu",
-                    Url = "u2u2u2u2u2u2u2u2u2"
-                };
+                    if (results.Value[0].RowCount > 0)
+                    {
+                        var row = results.Value[0].ResultRows.First();
+
+                        return new BotSite
+                        {
+                            Alias = string.Empty,
+                            Id = Guid.Empty,
+                            Title = row["Title"].ToString(),
+                            Url = row["SPWebUrl"].ToString()
+                        };
+                    }
+
+
+                }
+
+
             }
+
+
+            return null;
         }
 
         /// <summary>
