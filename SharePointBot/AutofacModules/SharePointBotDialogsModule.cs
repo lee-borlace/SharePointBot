@@ -33,19 +33,16 @@ namespace SharePointBot.AutofacModules
 
             builder
                 .RegisterType<LogInDialog>()
-                .Keyed<LogInDialog>(FiberModule.Key_DoNotSerialize)
                 .AsSelf()
                 .InstancePerDependency();
 
             builder
                .RegisterType<GetSiteDialog>()
-               .Keyed<GetSiteDialog>(FiberModule.Key_DoNotSerialize)
                .AsSelf()
                .InstancePerDependency();
 
             builder
                .RegisterType<SelectSiteDialog>()
-               .Keyed<SelectSiteDialog>(FiberModule.Key_DoNotSerialize)
                .AsSelf()
                .InstancePerDependency();
         }
