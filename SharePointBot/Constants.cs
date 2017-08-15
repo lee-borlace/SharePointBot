@@ -37,6 +37,7 @@ namespace SharePointBot
             public static string LogOnFirst = "You'll need to log on first.";
             public static string InvalidSiteCollectionUrl = "That didn't look like a valid site collection URL e.g. https://tenantName.sharepoint.com/sites/siteCollection. You're not logged in yet.";
             public static string LogInFailed = "Sorry, I couldn't log you in.";
+            public static string CouldntFindSite = "Sorry, I couldn't find that site.";
         }
 
         public static class StateKeys
