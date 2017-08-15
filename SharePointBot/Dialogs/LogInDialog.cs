@@ -16,8 +16,6 @@ namespace SharePointBot.Dialogs
         protected IAuthenticationService _authenticationService;
         protected ISharePointService _sharePointService;
 
-        protected string _lastSiteCollectionUrl;
-
         public LogInDialog(IAuthenticationService authenticationService, ISharePointService sharePointService)
         {
             SetField.NotNull(out _authenticationService, nameof(_authenticationService), authenticationService);
@@ -28,12 +26,12 @@ namespace SharePointBot.Dialogs
         {
             // Build up prompt depending on whether previous site collection URL is recorded in state.
             string prompt = Constants.Responses.LogIntoWhichSiteCollection;
-            _lastSiteCollectionUrl = null;
-            var lastSiteCollectionUrlPresent = context.PrivateConversationData.TryGetValue<string>(Constants.StateKeys.LastLoggedInSiteCollectionUrl, out _lastSiteCollectionUrl);
+            string lastSiteCollectionUrl = null;
+            var lastSiteCollectionUrlPresent = context.PrivateConversationData.TryGetValue<string>(Constants.StateKeys.LastLoggedInSiteCollectionUrl, out lastSiteCollectionUrl);
 
             if (lastSiteCollectionUrlPresent)
             {
-                prompt += string.Format(Constants.Responses.LastSiteCollection, _lastSiteCollectionUrl);
+                prompt += string.Format(Constants.Responses.LastSiteCollection, lastSiteCollectionUrl);
             }
 
             PromptDialog.Text(
@@ -61,11 +59,15 @@ namespace SharePointBot.Dialogs
             // User typed "last"
             if (Regex.IsMatch(userResponse, Constants.UtteranceRegexes.LastSiteCollectionUrl))
             {
+                string prompt = Constants.Responses.LogIntoWhichSiteCollection;
+                string lastSiteCollectionUrl = null;
+                var lastSiteCollectionUrlPresent = context.PrivateConversationData.TryGetValue<string>(Constants.StateKeys.LastLoggedInSiteCollectionUrl, out lastSiteCollectionUrl);
+
                 // Last URL is present - use it.
-                if (!string.IsNullOrEmpty(_lastSiteCollectionUrl))
+                if (!string.IsNullOrEmpty(lastSiteCollectionUrl))
                 {
                     valid = true;
-                    siteCollectionUrl = _lastSiteCollectionUrl;
+                    siteCollectionUrl = lastSiteCollectionUrl;
                 }
             }
             // User didn't type "last".

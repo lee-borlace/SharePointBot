@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using Autofac.Core;
 using Microsoft.Bot.Builder.Dialogs;
+using Microsoft.Bot.Builder.Internals.Fibers;
 using SharePointBot.Dialogs;
 using SharePointBot.Services;
 using SharePointBot.Services.Interfaces;
@@ -25,7 +26,13 @@ namespace SharePointBot.AutofacModules
             builder.RegisterType<AuthenticationService>().As<IAuthenticationService>().SingleInstance();
 
             builder.RegisterType<LogInDialog>().AsSelf();
-            builder.Register((c, p) => new LogInDialog(c.Resolve<IAuthenticationService>(), c.Resolve<ISharePointService>())).AsSelf().InstancePerDependency();
+
+
+            builder
+                .Register((c, p) => new LogInDialog(c.Resolve<IAuthenticationService>(), c.Resolve<ISharePointService>()))
+                .Keyed<LogInDialog>(FiberModule.Key_DoNotSerialize)
+                .AsSelf()
+                .InstancePerDependency();
         }
     }
 }
