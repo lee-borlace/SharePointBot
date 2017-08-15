@@ -10,6 +10,9 @@ using Autofac;
 using Microsoft.Bot.Builder.Dialogs.Internals;
 using Microsoft.Bot.Builder.Base;
 using System.Collections.Generic;
+using Moq;
+using SharePointBot.Services.Interfaces;
+using SharePointBot.Services;
 
 namespace SharePointBot.UnitTests.Dialogs
 {
@@ -20,7 +23,7 @@ namespace SharePointBot.UnitTests.Dialogs
         public async Task ShouldReturnEcho()
         {
             // Instantiate dialog to test
-            IDialog<object> rootDialog = new RootDialog();
+            IDialog<object> rootDialog = new RootDialog(new LogInDialog(new AuthenticationService(), new SharePointService()));
 
             // Create in-memory bot environment
             Func<IDialog<object>> MakeRoot = () => rootDialog;
@@ -36,6 +39,8 @@ namespace SharePointBot.UnitTests.Dialogs
 
                     // Send message and check the answer.
                     IMessageActivity toUser = await GetResponse(container, MakeRoot, toBot);
+
+                    Assert.AreEqual(Constants.Responses.LogIntoWhichSiteCollection, toUser.Text);
                 }
             }
         }

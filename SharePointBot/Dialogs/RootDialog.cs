@@ -23,6 +23,14 @@ namespace SharePointBot.Dialogs
     [Serializable]
     public class RootDialog : IDialog<object>
     {
+        private LogInDialog _loginDialog;
+
+        public RootDialog(LogInDialog loginDialog)
+        {
+            _loginDialog = loginDialog;
+        }
+
+
         public Task StartAsync(IDialogContext context)
         {
             context.Wait(MessageReceivedAsync);
@@ -46,7 +54,7 @@ namespace SharePointBot.Dialogs
                 if (match.Success)
                 {
                     foundMatch = true;
-                    context.Call(scope.Resolve<LogInDialog>(), LoginCallBack);
+                    context.Call(_loginDialog, LoginCallBack);
                 }
 
                 // Log out.
