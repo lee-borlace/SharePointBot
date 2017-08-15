@@ -13,42 +13,20 @@ using System.Collections.Generic;
 using Moq;
 using SharePointBot.Services.Interfaces;
 using SharePointBot.Services;
+using Microsoft.Bot.Builder.Internals.Fibers;
 
 namespace SharePointBot.UnitTests.Dialogs
 {
     [TestClass]
     public class RootDialogTests : DialogTestBase
     {
-        //[TestMethod]
-        //public async Task ShouldReturnEcho()
-        //{
-        //    // Instantiate dialog to test
-        //    IDialog<object> rootDialog = new RootDialog(new LogInDialog(new AuthenticationService(), new SharePointService()));
 
-        //    // Create in-memory bot environment
-        //    Func<IDialog<object>> MakeRoot = () => rootDialog;
-
-        //    using (new FiberTestBase.ResolveMoqAssembly(rootDialog))
-        //    {
-        //        using (var container = Build(Options.MockConnectorFactory | Options.ScopedQueue, rootDialog))
-        //        {
-        //            // Create a message to send to bot
-        //            var toBot = DialogTestBase.MakeTestMessage();
-        //            toBot.From.Id = Guid.NewGuid().ToString();
-        //            toBot.Text = "login";
-
-        //            // Send message and check the answer.
-        //            IMessageActivity toUser = await GetResponse(container, MakeRoot, toBot);
-
-        //            Assert.AreEqual(Constants.Responses.LogIntoWhichSiteCollection, toUser.Text);
-        //        }
-        //    }
-        //}
-
-
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         [TestMethod]
-        public async Task RootDialogTest1()
+        public async Task RootDialog_Conversation_Login()
         {
             var authService = new Mock<IAuthenticationService>();
             var spBotStateService = new Mock<ISharePointBotStateService>();
@@ -56,12 +34,75 @@ namespace SharePointBot.UnitTests.Dialogs
 
             using (new FiberTestBase.ResolveMoqAssembly(authService.Object, spBotStateService.Object, spService.Object))
             {
-                using (var container = Build(Options.ResolveDialogFromContainer, authService.Object, spBotStateService.Object, spService.Object))
+                // Create the container which will be used when testing this conversation.
+                using (_container = Build(Options.ResolveDialogFromContainer, authService.Object, spBotStateService.Object, spService.Object))
                 {
+                    RegisterDependencies(_container, authService, spBotStateService, spService);
 
+                    // Create common conversation ID to use for this conversation.
+                    _conversationId = Guid.NewGuid();
+
+                    await SendTextAndAssertResponse(
+                        "login",
+                        Constants.Responses.LogIntoWhichSiteCollection);
+
+                    await SendTextAndAssertResponse(
+                        "dasdsadasdsaddsa",
+                        Constants.Responses.InvalidSiteCollectionUrl);
+
+                    await SendTextAndAssertResponse(
+                        "login",
+                       Constants.Responses.LogIntoWhichSiteCollection);
+
+                    //await SendTextAndAssertResponse(
+                    //    "https://mytenant.sharepoint.com",
+                    //    Constants.Responses.LogIntoWhichSiteCollection);
                 }
             }
 
+        }
+
+
+
+        private void RegisterDependencies(
+            IContainer container,
+            Mock<IAuthenticationService> authService,
+            Mock<ISharePointBotStateService> spBotStateService,
+            Mock<ISharePointService> spService)
+        {
+            var builder = new ContainerBuilder();
+
+            builder.RegisterType<RootDialog>().As<IDialog<object>>().InstancePerDependency();
+
+            builder.Register(c => spBotStateService.Object)
+                .Keyed<ISharePointBotStateService>(FiberModule.Key_DoNotSerialize)
+                .As<ISharePointBotStateService>();
+
+            builder.Register(c => spService.Object)
+                .Keyed<ISharePointService>(FiberModule.Key_DoNotSerialize)
+                .As<ISharePointService>().SingleInstance();
+
+            builder.Register(c => authService.Object)
+                .Keyed<IAuthenticationService>(FiberModule.Key_DoNotSerialize)
+                .As<IAuthenticationService>().SingleInstance();
+
+            builder
+                .RegisterType<LogInDialog>()
+                .AsSelf()
+                .InstancePerDependency();
+
+            builder
+               .RegisterType<GetSiteDialog>()
+               .AsSelf()
+               .InstancePerDependency();
+
+            builder
+               .RegisterType<SelectSiteDialog>()
+               .AsSelf()
+               .InstancePerDependency();
+
+
+            builder.Update(container);
         }
 
     }

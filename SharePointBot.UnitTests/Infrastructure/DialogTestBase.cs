@@ -44,11 +44,23 @@ using Microsoft.Bot.Connector;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SharePointBot.AutofacModules;
 using Microsoft.Bot.Builder.Base;
+using SharePointBot.Dialogs;
+using SharePointBot;
 
 namespace Microsoft.Bot.Builder.Tests
 {
     public abstract class DialogTestBase
     {
+        /// <summary>
+        /// Conversation identifier to use for the life of a particular test method.
+        /// </summary>
+        protected Guid _conversationId;
+
+        /// <summary>
+        /// Container to use for the life of a particular test method.
+        /// </summary>
+        protected IContainer _container;
+
         [Flags]
         public enum Options { None = 0, Reflection = 1, ScopedQueue = 2, MockConnectorFactory = 4, ResolveDialogFromContainer = 8, LastWriteWinsCachingBotDataStore = 16 };
 
@@ -134,6 +146,26 @@ namespace Microsoft.Bot.Builder.Tests
                 Type = ActivityTypes.Message,
                 From = new ChannelAccount { Id = ChannelID.User },
                 Conversation = new ConversationAccount { Id = Guid.NewGuid().ToString() },
+                Recipient = new ChannelAccount { Id = ChannelID.Bot },
+                ServiceUrl = "InvalidServiceUrl",
+                ChannelId = "Test",
+                Attachments = Array.Empty<Attachment>(),
+                Entities = Array.Empty<Entity>(),
+            };
+        }
+
+        /// <summary>
+        /// Makes a new test message for the current conversation.
+        /// </summary>
+        /// <returns></returns>
+        public IMessageActivity MakeTestMessageCommonConversation()
+        {
+            return new Activity()
+            {
+                Id = Guid.NewGuid().ToString(),
+                Type = ActivityTypes.Message,
+                From = new ChannelAccount { Id = ChannelID.User },
+                Conversation = new ConversationAccount { Id = _conversationId.ToString() },
                 Recipient = new ChannelAccount { Id = ChannelID.Bot },
                 ServiceUrl = "InvalidServiceUrl",
                 ChannelId = "Test",
@@ -253,6 +285,22 @@ namespace Microsoft.Bot.Builder.Tests
                 //await Conversation.SendAsync(toBot, makeRoot, CancellationToken.None);
                 return scope.Resolve<Queue<IMessageActivity>>().Dequeue();
             }
+        }
+
+        /// <summary>
+        /// Send text to a dialog and assert that a particular response is received.
+        /// </summary>
+        /// <param name="request">The request.</param>
+        /// <param name="expectedResponse">The expected response.</param>
+        /// <returns></returns>
+        protected async Task SendTextAndAssertResponse(string request, string expectedResponse)
+        {
+            var toBot = MakeTestMessageCommonConversation();
+            toBot.Text = request;
+
+            var toUser = await GetResponse(_container, () => _container.Resolve<RootDialog>(), toBot);
+
+            Assert.AreEqual(expectedResponse, toUser.Text);
         }
     }
 }
