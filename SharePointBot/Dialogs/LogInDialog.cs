@@ -18,8 +18,8 @@ namespace SharePointBot.Dialogs
 
         public LogInDialog(IAuthenticationService authenticationService, ISharePointService sharePointService)
         {
-            SetField.NotNull(out _authenticationService, nameof(_authenticationService), authenticationService);
-            SetField.NotNull(out _sharePointService, nameof(_sharePointService), sharePointService);
+            _authenticationService = authenticationService;
+            _sharePointService = sharePointService;
         }
 
         public async Task StartAsync(IDialogContext context)

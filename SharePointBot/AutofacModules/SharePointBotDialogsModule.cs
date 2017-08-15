@@ -18,21 +18,36 @@ namespace SharePointBot.AutofacModules
             base.Load(builder);
 
             builder.RegisterType<RootDialog>().As<IDialog<object>>().InstancePerDependency();
-            builder.RegisterType<GetSiteDialog>().AsSelf();
-            builder.RegisterType<SelectSiteDialog>().AsSelf();
 
-            builder.RegisterType<SharePointBotStateService>().As<ISharePointBotStateService>();
-            builder.RegisterType<SharePointService>().As<ISharePointService>().SingleInstance();
-            builder.RegisterType<AuthenticationService>().As<IAuthenticationService>().SingleInstance();
+            builder.RegisterType<SharePointBotStateService>()
+                .Keyed<ISharePointBotStateService>(FiberModule.Key_DoNotSerialize)
+                .As<ISharePointBotStateService>();
 
-            builder.RegisterType<LogInDialog>().AsSelf();
+            builder.RegisterType<SharePointService>()
+                .Keyed<ISharePointService>(FiberModule.Key_DoNotSerialize)
+                .As<ISharePointService>().SingleInstance();
 
+            builder.RegisterType<AuthenticationService>()
+                .Keyed<IAuthenticationService>(FiberModule.Key_DoNotSerialize)
+                .As<IAuthenticationService>().SingleInstance();
 
             builder
-                .Register((c, p) => new LogInDialog(c.Resolve<IAuthenticationService>(), c.Resolve<ISharePointService>()))
+                .RegisterType<LogInDialog>()
                 .Keyed<LogInDialog>(FiberModule.Key_DoNotSerialize)
                 .AsSelf()
                 .InstancePerDependency();
+
+            builder
+               .RegisterType<GetSiteDialog>()
+               .Keyed<GetSiteDialog>(FiberModule.Key_DoNotSerialize)
+               .AsSelf()
+               .InstancePerDependency();
+
+            builder
+               .RegisterType<SelectSiteDialog>()
+               .Keyed<SelectSiteDialog>(FiberModule.Key_DoNotSerialize)
+               .AsSelf()
+               .InstancePerDependency();
         }
     }
 }

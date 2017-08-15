@@ -60,7 +60,7 @@ namespace SharePointBot.Services
                             Alias = string.Empty,
                             Id = Guid.Empty,
                             Title = row["Title"].ToString(),
-                            Url = row["SPWebUrl"].ToString()
+                            Url = row["SPWebUrl"]?.ToString()
                         };
                     }
 

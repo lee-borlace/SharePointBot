@@ -22,22 +22,35 @@ namespace SharePointBot.Dialogs
         /// <summary>
         /// Title or alias of site to select.
         /// </summary>
-        protected string _siteTitleOrAlias;
+        public string SiteTitleOrAlias;
 
         protected IAuthenticationService _authenticationService;
 
         protected ISharePointService _sharePointService;
+
+        private ISharePointBotStateService _sharePointBotStateService;
+
+        private GetSiteDialog _getSiteDialog;
+
+        protected LogInDialog _logInDialog;
 
         /// <summary>
         /// The resolved site.
         /// </summary>
         protected BotSite _site;
 
-        public SelectSiteDialog(string siteTitleOrAlias, IAuthenticationService authenticationService, ISharePointService sharePointService)
+        public SelectSiteDialog(
+            IAuthenticationService authenticationService,
+            ISharePointService sharePointService,
+            ISharePointBotStateService sharePointBotStateService,
+            GetSiteDialog getSiteDialog,
+            LogInDialog logInDialog)
         {
-            SetField.NotNull(out _siteTitleOrAlias, nameof(_siteTitleOrAlias), siteTitleOrAlias);
-            SetField.NotNull(out _authenticationService, nameof(_authenticationService), authenticationService);
-            SetField.NotNull(out _sharePointService, nameof(_sharePointService), sharePointService);
+            _authenticationService = authenticationService;
+            _sharePointService = sharePointService;
+            _sharePointBotStateService = sharePointBotStateService;
+            _logInDialog = logInDialog;
+            _getSiteDialog = getSiteDialog;
         }
 
         /// <summary>
@@ -47,21 +60,18 @@ namespace SharePointBot.Dialogs
         /// <returns></returns>
         public async Task StartAsync(IDialogContext context)
         {
-            using (var scope = DialogModule.BeginLifetimeScope(Conversation.Container, context.Activity as IMessageActivity))
-            {
-                // Make sure we have an access token before trying to select site.
-                var accessToken = await _authenticationService.GetAccessToken(context);
+            // Make sure we have an access token before trying to select site.
+            var accessToken = await _authenticationService.GetAccessToken(context);
 
-                // No access token - redirect to login dialog first.
-                if (accessToken == null)
-                {
-                    await context.PostAsync(Constants.Responses.LogOnFirst);
-                    context.Call(scope.Resolve<LogInDialog>(), AfterLogOn);
-                }
-                else
-                {
-                    await SelectSite(context);
-                }
+            // No access token - redirect to login dialog first.
+            if (accessToken == null)
+            {
+                await context.PostAsync(Constants.Responses.LogOnFirst);
+                context.Call(_logInDialog, AfterLogOn);
+            }
+            else
+            {
+                await SelectSite(context);
             }
         }
 
@@ -82,7 +92,7 @@ namespace SharePointBot.Dialogs
                 await context.PostAsync(Constants.Responses.LogInFailed);
                 context.Done<BotSite>(null);
             }
-            
+
         }
 
 
@@ -94,7 +104,7 @@ namespace SharePointBot.Dialogs
         private async Task SelectSite(IDialogContext context)
         {
             // If title / alias was specified when opening the dialog, check it and store it.
-            if (!string.IsNullOrEmpty(_siteTitleOrAlias))
+            if (!string.IsNullOrEmpty(SiteTitleOrAlias))
             {
                 await GetSpecifiedSite(context);
 
@@ -129,7 +139,7 @@ namespace SharePointBot.Dialogs
         /// <returns></returns>
         private async Task AfterGetSiteFromInput(IDialogContext ctx, IAwaitable<string> result)
         {
-            _siteTitleOrAlias = await result;
+            SiteTitleOrAlias = await result;
             await GetSpecifiedSite(ctx);
             await StoreSiteInBotState(ctx);
         }
@@ -142,7 +152,7 @@ namespace SharePointBot.Dialogs
         /// <returns></returns>
         private async Task GetSpecifiedSite(IDialogContext context)
         {
-            _site = await _sharePointService.GetWebByTitle(_siteTitleOrAlias, await _authenticationService.GetAccessToken(context), context);
+            _site = await _sharePointService.GetWebByTitle(SiteTitleOrAlias, await _authenticationService.GetAccessToken(context), context);
         }
 
         /// <summary>
@@ -152,14 +162,11 @@ namespace SharePointBot.Dialogs
         /// <returns></returns>
         private async Task StoreSiteInBotState(IDialogContext context)
         {
-            using (var scope = DialogModule.BeginLifetimeScope(Conversation.Container, context.Activity as IMessageActivity))
-            {
-                var service = scope.Resolve<ISharePointBotStateService>(new NamedParameter(Constants.FieldNames.BotContext, context));
-                await service.SetCurrentSite(_site);
+            _sharePointBotStateService.BotContext = context;
+            await _sharePointBotStateService.SetCurrentSite(_site);
 
-                // Display the current site, then return from dialog.
-                context.Call(scope.Resolve<GetSiteDialog>(), ReturnFromGetSiteDialog);
-            }
+            // Display the current site, then return from dialog.
+            context.Call(_getSiteDialog, ReturnFromGetSiteDialog);
         }
 
         /// <summary>

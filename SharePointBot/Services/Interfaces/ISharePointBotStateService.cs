@@ -9,8 +9,10 @@ using System.Threading.Tasks;
 
 namespace SharePointBot.Services.Interfaces
 {
-    interface ISharePointBotStateService
+    public interface ISharePointBotStateService
     {
+        IBotContext BotContext { get; set; }
+
         /// <summary>
         /// Set currently-selected site for current user in current conversation in current channel.
         /// </summary>

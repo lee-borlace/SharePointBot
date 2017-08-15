@@ -19,31 +19,31 @@ namespace SharePointBot.UnitTests.Dialogs
     [TestClass]
     public class RootDialogTests : DialogTestBase
     {
-        [TestMethod]
-        public async Task ShouldReturnEcho()
-        {
-            // Instantiate dialog to test
-            IDialog<object> rootDialog = new RootDialog(new LogInDialog(new AuthenticationService(), new SharePointService()));
+        //[TestMethod]
+        //public async Task ShouldReturnEcho()
+        //{
+        //    // Instantiate dialog to test
+        //    IDialog<object> rootDialog = new RootDialog(new LogInDialog(new AuthenticationService(), new SharePointService()));
 
-            // Create in-memory bot environment
-            Func<IDialog<object>> MakeRoot = () => rootDialog;
+        //    // Create in-memory bot environment
+        //    Func<IDialog<object>> MakeRoot = () => rootDialog;
 
-            using (new FiberTestBase.ResolveMoqAssembly(rootDialog))
-            {
-                using (var container = Build(Options.MockConnectorFactory | Options.ScopedQueue, rootDialog))
-                {
-                    // Create a message to send to bot
-                    var toBot = DialogTestBase.MakeTestMessage();
-                    toBot.From.Id = Guid.NewGuid().ToString();
-                    toBot.Text = "login";
+        //    using (new FiberTestBase.ResolveMoqAssembly(rootDialog))
+        //    {
+        //        using (var container = Build(Options.MockConnectorFactory | Options.ScopedQueue, rootDialog))
+        //        {
+        //            // Create a message to send to bot
+        //            var toBot = DialogTestBase.MakeTestMessage();
+        //            toBot.From.Id = Guid.NewGuid().ToString();
+        //            toBot.Text = "login";
 
-                    // Send message and check the answer.
-                    IMessageActivity toUser = await GetResponse(container, MakeRoot, toBot);
+        //            // Send message and check the answer.
+        //            IMessageActivity toUser = await GetResponse(container, MakeRoot, toBot);
 
-                    Assert.AreEqual(Constants.Responses.LogIntoWhichSiteCollection, toUser.Text);
-                }
-            }
-        }
+        //            Assert.AreEqual(Constants.Responses.LogIntoWhichSiteCollection, toUser.Text);
+        //        }
+        //    }
+        //}
 
 
         /// <summary>

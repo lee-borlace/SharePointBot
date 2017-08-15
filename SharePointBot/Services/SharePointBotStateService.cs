@@ -15,18 +15,28 @@ namespace SharePointBot.Services
     /// </summary>
     public class SharePointBotStateService : ISharePointBotStateService
     {
-        IBotContext _botContext;
+        private IBotContext _botContext;
+
+        public IBotContext BotContext
+        {
+            get
+            {
+                return _botContext;
+            }
+            set
+            {
+                _botContext = value;
+                _activity = _botContext.Activity;
+                _stateClient = _activity.GetStateClient();
+                _botState = _stateClient.BotState;
+            }
+        }
+
         IActivity _activity;
         IBotState _botState;
         StateClient _stateClient;
 
-        public SharePointBotStateService(IBotContext botContext)
-        {
-            _botContext = botContext;
-            _activity = botContext.Activity;
-            _stateClient = _activity.GetStateClient();
-            _botState = _stateClient.BotState;
-        }
+       
 
         /// <summary>
         /// Get currently-selected site for current user in current conversation in current channel.
@@ -43,7 +53,7 @@ namespace SharePointBot.Services
             //return botData.GetProperty<BotSite>(Constants.StateKeys.CurrentSite);
 
             BotSite retrieved = null;
-            _botContext.PrivateConversationData.TryGetValue<BotSite>(Constants.StateKeys.CurrentSite, out retrieved);
+            BotContext.PrivateConversationData.TryGetValue<BotSite>(Constants.StateKeys.CurrentSite, out retrieved);
             return retrieved;
         }
 
@@ -64,7 +74,7 @@ namespace SharePointBot.Services
             //botData.SetProperty<BotSite>(Constants.StateKeys.CurrentSite, site);
             //await SetuserDataAsync(botData);
 
-            _botContext.PrivateConversationData.SetValue<BotSite>(Constants.StateKeys.CurrentSite, site);
+            BotContext.PrivateConversationData.SetValue<BotSite>(Constants.StateKeys.CurrentSite, site);
         }
 
         /// <summary>

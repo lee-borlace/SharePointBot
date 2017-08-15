@@ -18,17 +18,21 @@ namespace SharePointBot.Dialogs
     [Serializable]
     public class GetSiteDialog : IDialog<BotSite>
     {
+        private ISharePointBotStateService _sharePointBotStateService;
+
+        public GetSiteDialog(ISharePointBotStateService sharePointBotStateService)
+        {
+            _sharePointBotStateService = sharePointBotStateService;
+        }
+
 
         public async Task StartAsync(IDialogContext context)
         {
             BotSite currentSite = null;
 
-            using (var scope = DialogModule.BeginLifetimeScope(Conversation.Container, context.Activity as IMessageActivity))
-            {
-                var service = scope.Resolve<ISharePointBotStateService>(new NamedParameter(Constants.FieldNames.BotContext, context));
-
-                currentSite = await service.GetCurrentSite();
-            }
+            _sharePointBotStateService.BotContext = context;
+            currentSite = await _sharePointBotStateService.GetCurrentSite();
+           
 
             if (currentSite != null)
             {
