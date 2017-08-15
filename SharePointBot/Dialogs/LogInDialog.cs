@@ -4,6 +4,7 @@ using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Internals.Fibers;
 using Microsoft.Bot.Connector;
 using SharePointBot.Services.Interfaces;
+using SharePointBot.Utility;
 using System;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -84,7 +85,7 @@ namespace SharePointBot.Dialogs
             {
                 context.PrivateConversationData.SetValue<string>(Constants.StateKeys.LastLoggedInSiteCollectionUrl, siteCollectionUrl);
 
-                var tenantUrl = _sharePointService.GetTenantUrlFromSiteCollectionUrl(siteCollectionUrl);
+                var tenantUrl = UrlUtility.GetTenantUrlFromSiteCollectionUrl(siteCollectionUrl);
                 context.PrivateConversationData.SetValue<string>(Constants.StateKeys.LastLoggedInTenantUrl, tenantUrl);
 
                 await _authenticationService.ForwardToBotAuthLoginDialog(tenantUrl, context, context.Activity as IMessageActivity, AfterLogOn);

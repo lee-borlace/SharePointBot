@@ -107,7 +107,7 @@
     <Compile Include="Infrastructure\DialogTestBase.cs" />
     <Compile Include="Infrastructure\FiberTests.cs" />
     <Compile Include="RegexTests.cs" />
-    <Compile Include="Services\SharePointServiceTests.cs" />
+    <Compile Include="Utility\UrlUtilityTests.cs" />
     <Compile Include="UtteranceRegexTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -120,6 +120,9 @@
       <Project>{c9d38d65-441e-4973-af0f-27cfbe773903}</Project>
       <Name>SharePointBot</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Services\" />
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

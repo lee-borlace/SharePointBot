@@ -257,6 +257,7 @@
     <Compile Include="Services\SharePointBotStateService.cs" />
     <Compile Include="Services\Interfaces\ISharePointBotStateService.cs" />
     <Compile Include="Services\SharePointService.cs" />
+    <Compile Include="Utility\UrlUtility.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config">
@@ -270,9 +271,7 @@
       <DependentUpon>Web.config</DependentUpon>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Helpers\" />
-  </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
