@@ -16,7 +16,6 @@ using System.Web;
 
 namespace SharePointBot.Services
 {
-    [Serializable]
     public class SharePointService : ISharePointService
     {
         /// <summary>
