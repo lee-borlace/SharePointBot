@@ -14,11 +14,12 @@ using Moq;
 using SharePointBot.Services.Interfaces;
 using SharePointBot.Services;
 using Microsoft.Bot.Builder.Internals.Fibers;
+using SharePointBot.UnitTests.Mocks;
 
 namespace SharePointBot.UnitTests.Dialogs
 {
     [TestClass]
-    public class RootDialogTests : DialogTestBase
+    public class RootDialogTests : SharePointBotDialogTestBase
     {
 
         /// <summary>
@@ -28,19 +29,22 @@ namespace SharePointBot.UnitTests.Dialogs
         [TestMethod]
         public async Task RootDialog_Conversation_Login()
         {
-            var authService = new Mock<IAuthenticationService>();
-            var spBotStateService = new Mock<ISharePointBotStateService>();
-            var spService = new Mock<ISharePointService>();
+            var authService = new AuthenticationServiceMock();
+            var spBotStateServiceMock = new Mock<ISharePointBotStateService>();
+            var spServiceMock = new Mock<ISharePointService>();
 
-            using (new FiberTestBase.ResolveMoqAssembly(authService.Object, spBotStateService.Object, spService.Object))
+            using (new FiberTestBase.ResolveMoqAssembly(authService, spBotStateServiceMock.Object, spServiceMock.Object))
             {
                 // Create the container which will be used when testing this conversation.
-                using (_container = Build(Options.ResolveDialogFromContainer, authService.Object, spBotStateService.Object, spService.Object))
+                using (_container = Build(Options.ResolveDialogFromContainer, authService, spBotStateServiceMock.Object, spServiceMock.Object))
                 {
-                    RegisterDependencies(_container, authService, spBotStateService, spService);
+                    RegisterDependencies(_container, authService, spBotStateServiceMock, spServiceMock);
 
                     // Create common conversation ID to use for this conversation.
                     _conversationId = Guid.NewGuid();
+
+                    // Ensure root dialog is captured.
+                    _makeRoot = () => _container.Resolve<RootDialog>();
 
                     await SendTextAndAssertResponse(
                         "login",
@@ -54,9 +58,9 @@ namespace SharePointBot.UnitTests.Dialogs
                         "login",
                        Constants.Responses.LogIntoWhichSiteCollection);
 
-                    //await SendTextAndAssertResponse(
-                    //    "https://mytenant.sharepoint.com",
-                    //    Constants.Responses.LogIntoWhichSiteCollection);
+                    await SendTextAndAssertResponse(
+                        "https://mytenant.sharepoint.com/sites/mysitecollection",
+                        Constants.Responses.LoggedIn);
                 }
             }
 
@@ -66,7 +70,7 @@ namespace SharePointBot.UnitTests.Dialogs
 
         private void RegisterDependencies(
             IContainer container,
-            Mock<IAuthenticationService> authService,
+            IAuthenticationService authService,
             Mock<ISharePointBotStateService> spBotStateService,
             Mock<ISharePointService> spService)
         {
@@ -82,7 +86,7 @@ namespace SharePointBot.UnitTests.Dialogs
                 .Keyed<ISharePointService>(FiberModule.Key_DoNotSerialize)
                 .As<ISharePointService>().SingleInstance();
 
-            builder.Register(c => authService.Object)
+            builder.Register(c => authService)
                 .Keyed<IAuthenticationService>(FiberModule.Key_DoNotSerialize)
                 .As<IAuthenticationService>().SingleInstance();
 

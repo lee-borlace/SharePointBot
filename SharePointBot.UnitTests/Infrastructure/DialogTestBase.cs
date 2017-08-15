@@ -61,6 +61,11 @@ namespace Microsoft.Bot.Builder.Tests
         /// </summary>
         protected IContainer _container;
 
+        /// <summary>
+        /// Used to determine root dialog.
+        /// </summary>
+        protected Func<IDialog<object>> _makeRoot;
+
         [Flags]
         public enum Options { None = 0, Reflection = 1, ScopedQueue = 2, MockConnectorFactory = 4, ResolveDialogFromContainer = 8, LastWriteWinsCachingBotDataStore = 16 };
 
@@ -298,9 +303,11 @@ namespace Microsoft.Bot.Builder.Tests
             var toBot = MakeTestMessageCommonConversation();
             toBot.Text = request;
 
-            var toUser = await GetResponse(_container, () => _container.Resolve<RootDialog>(), toBot);
+            var toUser = await GetResponse(_container, _makeRoot, toBot);
 
             Assert.AreEqual(expectedResponse, toUser.Text);
         }
+
     }
+
 }

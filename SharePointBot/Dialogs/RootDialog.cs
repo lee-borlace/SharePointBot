@@ -108,8 +108,9 @@ namespace SharePointBot.Dialogs
         }
 
 
-        private async Task LoginCallBack(IDialogContext authContext, IAwaitable<AuthResult> authResult)
+        private async Task LoginCallBack(IDialogContext context, IAwaitable<AuthResult> authResult)
         {
+            context.Wait(MessageReceivedAsync);
         }
     }
 }
