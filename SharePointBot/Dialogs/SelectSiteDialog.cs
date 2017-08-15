@@ -12,6 +12,7 @@ using SharePointBot.Services.Interfaces;
 using Microsoft.Bot.Builder.Internals.Fibers;
 using BotAuth.Models;
 using Microsoft.Bot.Connector;
+using Microsoft.Bot.Builder.Dialogs.Internals;
 
 namespace SharePointBot.Dialogs
 {
@@ -46,7 +47,7 @@ namespace SharePointBot.Dialogs
         /// <returns></returns>
         public async Task StartAsync(IDialogContext context)
         {
-            using (var scope = Conversation.Container.BeginLifetimeScope())
+            using (var scope = DialogModule.BeginLifetimeScope(Conversation.Container, context.Activity as IMessageActivity))
             {
                 // Make sure we have an access token before trying to select site.
                 var accessToken = await _authenticationService.GetAccessToken(context);
@@ -142,7 +143,7 @@ namespace SharePointBot.Dialogs
         /// <returns></returns>
         private async Task StoreSiteInBotState(IDialogContext context)
         {
-            using (var scope = Conversation.Container.BeginLifetimeScope())
+            using (var scope = DialogModule.BeginLifetimeScope(Conversation.Container, context.Activity as IMessageActivity))
             {
                 var service = scope.Resolve<ISharePointBotStateService>(new NamedParameter(Constants.FieldNames.BotContext, context));
                 await service.SetCurrentSite(_site);

@@ -103,9 +103,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Dialogs\RootDialogTests.cs" />
+    <Compile Include="Infrastructure\ConversationTest.cs" />
     <Compile Include="Infrastructure\DialogTestBase.cs" />
-    <Compile Include="Infrastructure\FiberTestBase.cs" />
-    <Compile Include="Infrastructure\MockConnectorFactory.cs" />
+    <Compile Include="Infrastructure\FiberTests.cs" />
     <Compile Include="RegexTests.cs" />
     <Compile Include="Services\SharePointServiceTests.cs" />
     <Compile Include="UtteranceRegexTests.cs" />

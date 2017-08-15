@@ -15,6 +15,8 @@ using Autofac;
 using SharePointBot.AutofacModules;
 using SharePointBot.Model;
 using SharePointBot.Services.Interfaces;
+using System.Web.Http;
+using Microsoft.Bot.Builder.Dialogs.Internals;
 
 namespace SharePointBot.Dialogs
 {
@@ -30,11 +32,11 @@ namespace SharePointBot.Dialogs
 
         private async Task MessageReceivedAsync(IDialogContext context, IAwaitable<object> result)
         {
-            using (var scope = Conversation.Container.BeginLifetimeScope())
-            {
+            var message = await result;
+            var activity = await result as Activity;
 
-                var message = await result;
-                var activity = await result as Activity;
+            using (var scope = DialogModule.BeginLifetimeScope(Conversation.Container, activity))
+            {
                 var userToBot = activity.Text.ToLowerInvariant();
 
                 var foundMatch = false;

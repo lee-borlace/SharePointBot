@@ -42,9 +42,9 @@ using Microsoft.Bot.Builder.Dialogs.Internals;
 using Microsoft.Bot.Builder.Internals.Fibers;
 using Microsoft.Bot.Connector;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Microsoft.Bot.Builder.Base;
+using SharePointBot.AutofacModules;
 
-namespace SharePointBot.UnitTests.Infrastructure
+namespace Microsoft.Bot.Builder.Tests
 {
     public abstract class DialogTestBase
     {
@@ -62,6 +62,9 @@ namespace SharePointBot.UnitTests.Infrastructure
             {
                 builder.RegisterModule(new DialogModule_MakeRoot());
             }
+
+            builder.RegisterModule(new ServicesModule());
+            builder.RegisterModule(new SharePointBotDialogsModule());
 
             // make a "singleton" MockConnectorFactory per unit test execution
             IConnectorClientFactory factory = null;
@@ -231,25 +234,6 @@ namespace SharePointBot.UnitTests.Infrastructure
             var toUser = queue.Dequeue();
 
             asserts(toUser);
-        }
-
-        public async Task<IMessageActivity> GetResponse(IContainer container, Func<IDialog<object>> makeRoot, IMessageActivity toBot)
-        {
-            using (var scope = DialogModule.BeginLifetimeScope(container, toBot))
-            {
-                DialogModule_MakeRoot.Register(scope, makeRoot);
-
-                // act: sending the message
-                using (new LocalizedScope(toBot.Locale))
-                {
-                    var task = scope.Resolve<IPostToBot>();
-                    await task.PostAsync(toBot, CancellationToken.None);
-                }
-                // await Conversation.SendAsync(toBot, makeRoot, CancellationToken.None);
-                var result = scope.Resolve<Queue<IMessageActivity>>().Dequeue();
-
-                return result;
-            }
         }
     }
 }

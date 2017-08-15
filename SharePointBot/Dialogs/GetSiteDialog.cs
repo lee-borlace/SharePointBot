@@ -10,6 +10,8 @@ using Autofac;
 using Microsoft.Bot.Builder.Internals.Fibers;
 using SharePointBot.AutofacModules;
 using SharePointBot.Services.Interfaces;
+using Microsoft.Bot.Builder.Dialogs.Internals;
+using Microsoft.Bot.Connector;
 
 namespace SharePointBot.Dialogs
 {
@@ -21,7 +23,7 @@ namespace SharePointBot.Dialogs
         {
             BotSite currentSite = null;
 
-            using (var scope = Conversation.Container.BeginLifetimeScope())
+            using (var scope = DialogModule.BeginLifetimeScope(Conversation.Container, context.Activity as IMessageActivity))
             {
                 var service = scope.Resolve<ISharePointBotStateService>(new NamedParameter(Constants.FieldNames.BotContext, context));
 
