@@ -11,7 +11,7 @@ namespace SharePointBot.AutofacModules
     /// <summary>
     /// Module for resolving various dialogs.
     /// </summary>
-    public class SharePointBotDialogsModule : Module
+    public class SharePointBotModule : Module
     {
         protected override void Load(ContainerBuilder builder)
         {

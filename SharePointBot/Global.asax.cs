@@ -5,6 +5,7 @@ using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Dialogs.Internals;
 using Microsoft.Bot.Connector;
 using SharePointBot.AutofacModules;
+using SharePointBot.Dialogs;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -35,7 +36,8 @@ namespace SharePointBot
             var builder = new ContainerBuilder();
 
             builder.RegisterModule(new DialogModule());
-            builder.RegisterModule(new SharePointBotDialogsModule());
+            builder.RegisterModule(new SharePointBotModule());
+
             builder.RegisterApiControllers(Assembly.GetExecutingAssembly());
             var config = GlobalConfiguration.Configuration;
             var container = builder.Build();
@@ -50,8 +52,7 @@ namespace SharePointBot
         private void RegisterBotDependencies()
         {
             Conversation.UpdateContainer(builder => {
-                builder.RegisterModule(new SharePointBotDialogsModule());
-                builder.RegisterModule(new ServicesModule());
+                builder.RegisterModule(new SharePointBotModule());
 
 #if DEBUG
 #else                

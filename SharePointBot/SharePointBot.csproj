@@ -235,7 +235,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\WebApiConfig.cs" />
-    <Compile Include="AutofacModules\ServicesModule.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="Controllers\LogOutController.cs" />
     <Compile Include="Controllers\MessagesController.cs" />
@@ -251,7 +250,7 @@
     <Compile Include="Model\FavouriteList.cs" />
     <Compile Include="Model\FavouriteSite.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="AutofacModules\SharePointBotDialogsModule.cs" />
+    <Compile Include="AutofacModules\SharePointBotModule.cs" />
     <Compile Include="Services\AuthenticationService.cs" />
     <Compile Include="Services\Interfaces\IAuthenticationService.cs" />
     <Compile Include="Services\Interfaces\ISharePointService.cs" />

@@ -46,24 +46,23 @@ namespace SharePointBot.UnitTests.Dialogs
         //}
 
 
-        /// <summary>
-        /// Send a message to the bot and get repsponse.
-        /// </summary>
-        public async Task<IMessageActivity> GetResponse(IContainer container, Func<IDialog<object>> makeRoot, IMessageActivity toBot)
-        {
-            using (var scope = DialogModule.BeginLifetimeScope(container, toBot))
-            {
-                DialogModule_MakeRoot.Register(scope, makeRoot);
 
-                // act: sending the message
-                using (new LocalizedScope(toBot.Locale))
+        [TestMethod]
+        public async Task RootDialogTest1()
+        {
+            var authService = new Mock<IAuthenticationService>();
+            var spBotStateService = new Mock<ISharePointBotStateService>();
+            var spService = new Mock<ISharePointService>();
+
+            using (new FiberTestBase.ResolveMoqAssembly(authService.Object, spBotStateService.Object, spService.Object))
+            {
+                using (var container = Build(Options.ResolveDialogFromContainer, authService.Object, spBotStateService.Object, spService.Object))
                 {
-                    var task = scope.Resolve<IPostToBot>();
-                    await task.PostAsync(toBot, CancellationToken.None);
+
                 }
-                //await Conversation.SendAsync(toBot, makeRoot, CancellationToken.None);
-                return scope.Resolve<Queue<IMessageActivity>>().Dequeue();
             }
+
         }
+
     }
 }
