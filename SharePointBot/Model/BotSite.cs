@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SharePointBot.Utility;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -21,5 +22,10 @@ namespace SharePointBot.Model
         public string Title { get; set; }
 
         public string Url { get; set; }
+
+        public override string ToString()
+        {
+            return $"{Title} ({UrlUtility.GetServerRelativeUrl(Url)})";
+        }
     }
 }

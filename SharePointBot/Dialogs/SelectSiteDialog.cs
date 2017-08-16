@@ -175,17 +175,21 @@ namespace SharePointBot.Dialogs
             // Multiple matches - need to clarify further.
             else
             {
+                // Note that for this to work, the entity being selected (BotSite) should override ToString() and return something identifiable
+                // for each site. That seems to be used to determine which option has been selected.
                 var choose = new PromptDialog.PromptChoice<BotSite>(
                    sites,
                    Constants.Responses.ChooseSite,
                    Constants.Responses.DidntUnderstand + Constants.Responses.PleaseChooseAnOption,
                    Constants.Misc.DialogAttempts,
-                   descriptions: sites.Select(s => $"{s.Title} ({UrlUtility.GetServerRelativeUrl(s.Url)})"),
                    promptStyle: PromptStyle.Auto
                 );
 
+
                 context.Call<BotSite>(choose, AfterChoiceSelected);
             }
+
+            
 
         }
 
