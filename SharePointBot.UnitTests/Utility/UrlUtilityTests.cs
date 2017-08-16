@@ -61,5 +61,41 @@ namespace SharePointBot.UnitTests.Utility
         }
 
         #endregion
+
+        #region GetServerRelativeUrl
+
+        [TestMethod]
+        public void UrlUtility_GetServerRelativeUrl_1()
+        {
+            var input = "https://myHost.sharepoint.com";
+
+            var output = UrlUtility.GetServerRelativeUrl(input);
+
+            Assert.AreEqual("/", output);
+        }
+
+        [TestMethod]
+        public void UrlUtility_GetServerRelativeUrl_2()
+        {
+            var input = "https://myHost.sharepoint.com/";
+
+            var output = UrlUtility.GetServerRelativeUrl(input);
+
+            Assert.AreEqual("/", output);
+        }
+
+        [TestMethod]
+        public void UrlUtility_GetServerRelativeUrl_3()
+        {
+            var input = "https://myHost.sharepoint.com/sites/a/b/c/d";
+
+            var output = UrlUtility.GetServerRelativeUrl(input);
+
+            Assert.AreEqual("/sites/a/b/c/d", output);
+        }
+
+
+
+        #endregion
     }
 }

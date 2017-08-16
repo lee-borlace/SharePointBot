@@ -22,6 +22,17 @@ namespace SharePointBot.UnitTests.Mocks
         private bool _loggedIn;
 
         /// <summary>
+        /// Should we simulate successful login?
+        /// </summary>
+        private bool _simulateLoginSuccess;
+
+        public AuthenticationServiceMock(bool simulateLoginSuccess)
+        {
+            _simulateLoginSuccess = simulateLoginSuccess;
+        }
+      
+
+        /// <summary>
         /// Instead of forwarding to authentication prompt and then returning, pretends authentication works and just calls the callback with a fake access token.
         /// </summary>
         /// <param name="tenantUrl">The tenant URL.</param>
@@ -31,8 +42,16 @@ namespace SharePointBot.UnitTests.Mocks
         /// <returns></returns>
         public async Task ForwardToBotAuthLoginDialog(string tenantUrl, IDialogContext context, IMessageActivity message, ResumeAfter<AuthResult> loginCallBack)
         {
-            _loggedIn = true;
-            await loginCallBack(context, FakeAuthResult as IAwaitable<AuthResult>);
+            if (_simulateLoginSuccess)
+            {
+                _loggedIn = true;
+                await loginCallBack(context, FakeAuthResult as IAwaitable<AuthResult>);
+            }
+            else
+            {
+                _loggedIn = false;
+                await loginCallBack(context, null as IAwaitable<AuthResult>);
+            }
         }
 
         public async Task<AuthResult> GetAccessToken(IDialogContext context)

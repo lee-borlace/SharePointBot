@@ -30,7 +30,7 @@ namespace SharePointBot.UnitTests.Conversations
         [TestMethod]
         public async Task Conversation_LoginLogoutSequence()
         {
-            var authService = new AuthenticationServiceMock();
+            var authService = new AuthenticationServiceMock(true);
             var spBotStateServiceMock = new Mock<ISharePointBotStateService>();
             var spServiceMock = new Mock<ISharePointService>();
 

@@ -16,12 +16,28 @@ namespace SharePointBot
             public const string WhatIsCurrentList = @"";
             public const string LastSiteCollectionUrl = @"^\s*last\s*$";
         }
-      
+
         public static class RegexMisc
         {
+            /// <summary>
+            /// Any general URL.
+            /// </summary>
             public const string GeneralUrl = @"https ?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)";
+
+            /// <summary>
+            /// A SPO site collection URL, with capture group for tenant URL portion.
+            /// </summary>
             public const string SiteCollectionUrl = @"^\s*(?<tenantUrl>https:\/\/[-a-zA-Z0-9@:%._\+~#=]+\.sharepoint\.com)(\/[a-zA-Z0-9]+\/[-a-zA-Z0-9@:%._\+~#=]+)?\s*$";
+
+            /// <summary>
+            /// SPO tenant URL.
+            /// </summary>
             public const string SPOTenantUrl = @"^\s*https:\/\/[-a-zA-Z0-9@:%._\+~#=]+\.sharepoint\.com\s*$";
+
+            /// <summary>
+            /// URL on any sub-site, with capture group for the server-relative part.
+            /// </summary>
+            public const string AnySubSiteUrl = @"^\s*https:\/\/[-a-zA-Z0-9@:%._\+~#=]+\.sharepoint\.com(?<serverRelativeUrl>\/\S*)?\s*$";
         }
 
 
@@ -39,6 +55,9 @@ namespace SharePointBot
             public static string LogInFailed = "Sorry, I couldn't log you in.";
             public static string CouldntFindSite = "Sorry, I couldn't find that site.";
             public static string LoggedIn = "You're all logged in.";
+            public static string ChooseSite = "I found more than one matching site. Which one do you want to select?";
+            public static string DidntUnderstand = "Hmm I'm sorry, I didn't quite understand that.";
+            public static string PleaseChooseAnOption = " Please choose one of the options below.";
         }
 
         public static class StateKeys
@@ -61,6 +80,7 @@ namespace SharePointBot
         {
             public const string SiteTitleOrAlias = "siteTitleOrAlias";
             public const string TenantUrl = "tenantUrl";
+            public const string ServerRelativeUrl = "serverRelativeUrl";
         }
 
         public static class Misc

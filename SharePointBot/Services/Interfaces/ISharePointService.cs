@@ -15,11 +15,14 @@ namespace SharePointBot.Services.Interfaces
     public interface ISharePointService
     {
         /// <summary>
-        /// Get web by title.
+        /// Search for web. This will return a list of possible matches as it uses search for this purpose.
         /// </summary>
-        /// <param name="title"></param>
-        /// <param name="auth"></param>
-        /// <returns>A BotSite representing the web if it exists, otherwise null.</returns>
-        Task<BotSite> GetWebByTitle(string title, AuthResult auth, IBotContext context);
+        /// <param name="title">The title.</param>
+        /// <param name="auth">The authentication.</param>
+        /// <param name="context">The context.</param>
+        /// <returns>
+        /// A BotSite representing the web if it exists, otherwise null.
+        /// </returns>
+        Task<List<BotSite>> SearchForWeb(string title, AuthResult auth, IBotContext context);
     }
 }

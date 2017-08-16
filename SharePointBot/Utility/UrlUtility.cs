@@ -26,5 +26,30 @@ namespace SharePointBot.Utility
 
             return retVal;
         }
+
+        /// <summary>
+        /// Given a full URL, get the server-relative part.
+        /// </summary>
+        /// <param name="url">The URL.</param>
+        /// <returns></returns>
+        public static string GetServerRelativeUrl(string url)
+        {
+            string retVal = null;
+
+            var match = Regex.Match(url, Constants.RegexMisc.AnySubSiteUrl, RegexOptions.IgnoreCase, Regex.InfiniteMatchTimeout);
+
+            if (match.Success)
+            {
+                retVal = match.Groups[Constants.RegexGroupNames.ServerRelativeUrl].Value;
+
+                // Account for the root with nothing after it.
+                if (string.IsNullOrEmpty(retVal))
+                {
+                    retVal = "/";
+                }
+            }
+
+            return retVal;
+        }
     }
 }

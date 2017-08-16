@@ -13,6 +13,7 @@ using Microsoft.Bot.Builder.Internals.Fibers;
 using BotAuth.Models;
 using Microsoft.Bot.Connector;
 using Microsoft.Bot.Builder.Dialogs.Internals;
+using SharePointBot.Utility;
 
 namespace SharePointBot.Dialogs
 {
@@ -107,16 +108,6 @@ namespace SharePointBot.Dialogs
             if (!string.IsNullOrEmpty(SiteTitleOrAlias))
             {
                 await GetSpecifiedSite(context);
-
-                if (_site != null)
-                {
-                    await StoreSiteInBotState(context);
-                }
-                else
-                {
-                    await context.PostAsync(Constants.Responses.CouldntFindSite);
-                    context.Done<BotSite>(null);
-                }
             }
             // Otherwise prompt, then check and store.
             else
@@ -129,6 +120,21 @@ namespace SharePointBot.Dialogs
                );
             }
         }
+
+
+        private async Task StoreAndFinish(IDialogContext context)
+        {
+            if (_site != null)
+            {
+                await StoreSiteInBotState(context);
+            }
+            else
+            {
+                await context.PostAsync(Constants.Responses.CouldntFindSite);
+                context.Done<BotSite>(null);
+            }
+        }
+
 
 
         /// <summary>
@@ -146,13 +152,51 @@ namespace SharePointBot.Dialogs
 
 
         /// <summary>
-        /// Try to get the specified site. TODO : If it doesn't exist, trigger a dialog to narrow the source.
+        /// Try to get the specified site.
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
         private async Task GetSpecifiedSite(IDialogContext context)
         {
-            _site = await _sharePointService.GetWebByTitle(SiteTitleOrAlias, await _authenticationService.GetAccessToken(context), context);
+            var sites = await _sharePointService.SearchForWeb(SiteTitleOrAlias, await _authenticationService.GetAccessToken(context), context);
+
+            // Exactly one match.
+            if (sites.Count == 1)
+            {
+                _site = sites[0];
+                await StoreAndFinish(context);
+            }
+            // No match.
+            else if (sites.Count == 0)
+            {
+                _site = null;
+                await StoreAndFinish(context);
+            }
+            // Multiple matches - need to clarify further.
+            else
+            {
+                var choose = new PromptDialog.PromptChoice<BotSite>(
+                   sites,
+                   Constants.Responses.ChooseSite,
+                   Constants.Responses.DidntUnderstand + Constants.Responses.PleaseChooseAnOption,
+                   Constants.Misc.DialogAttempts,
+                   descriptions: sites.Select(s => $"{s.Title} ({UrlUtility.GetServerRelativeUrl(s.Url)})")
+                );
+
+                context.Call<BotSite>(choose, AfterChoiceSelected);
+
+             
+
+            }
+
+        }
+
+      
+
+        private async Task AfterChoiceSelected(IDialogContext context, IAwaitable<BotSite> result)
+        {
+            _site = await result;
+            await StoreAndFinish(context);
         }
 
         /// <summary>
@@ -162,11 +206,18 @@ namespace SharePointBot.Dialogs
         /// <returns></returns>
         private async Task StoreSiteInBotState(IDialogContext context)
         {
-            _sharePointBotStateService.BotContext = context;
-            await _sharePointBotStateService.SetCurrentSite(_site);
+            if (_site != null)
+            {
+                _sharePointBotStateService.BotContext = context;
+                await _sharePointBotStateService.SetCurrentSite(_site);
 
-            // Display the current site, then return from dialog.
-            context.Call(_getSiteDialog, ReturnFromGetSiteDialog);
+                // Display the current site, then return from dialog.
+                context.Call(_getSiteDialog, ReturnFromGetSiteDialog);
+            }
+            else
+            {
+                context.Done<BotSite>(null);
+            }
         }
 
         /// <summary>

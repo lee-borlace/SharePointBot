@@ -140,5 +140,65 @@ namespace SharePointBot.UnitTests
 
         #endregion
 
+        #region Sub-site URL
+
+        [TestMethod]
+        public void Regex_SubSiteUrl_Match1()
+        {
+            var input = "https://myHost.sharepoint.com/sites/a/b";
+            var pattern = Constants.RegexMisc.AnySubSiteUrl;
+
+            var match = Regex.Match(input, pattern, RegexOptions.IgnoreCase, Regex.InfiniteMatchTimeout);
+            var serverRelativeUrl = match.Groups[Constants.RegexGroupNames.ServerRelativeUrl].Value;
+
+            Assert.IsTrue(match.Success);
+            Assert.IsFalse(string.IsNullOrEmpty(serverRelativeUrl));
+            Assert.AreEqual("/sites/a/b", serverRelativeUrl);
+        }
+
+        [TestMethod]
+        public void Regex_SubSiteUrl_Match2()
+        {
+            var input = "https://myHost.sharepoint.com/";
+            var pattern = Constants.RegexMisc.AnySubSiteUrl;
+
+            var match = Regex.Match(input, pattern, RegexOptions.IgnoreCase, Regex.InfiniteMatchTimeout);
+            var serverRelativeUrl = match.Groups[Constants.RegexGroupNames.ServerRelativeUrl].Value;
+
+            Assert.IsTrue(match.Success);
+            Assert.IsFalse(string.IsNullOrEmpty(serverRelativeUrl));
+            Assert.AreEqual("/", serverRelativeUrl);
+        }
+
+        [TestMethod]
+        public void Regex_SubSiteUrl_Match3()
+        {
+            var input = "https://myHost.sharepoint.com";
+            var pattern = Constants.RegexMisc.AnySubSiteUrl;
+
+            var match = Regex.Match(input, pattern, RegexOptions.IgnoreCase, Regex.InfiniteMatchTimeout);
+            var serverRelativeUrl = match.Groups[Constants.RegexGroupNames.ServerRelativeUrl].Value;
+
+            Assert.IsTrue(match.Success);
+            Assert.IsTrue(string.IsNullOrEmpty(serverRelativeUrl));
+            Assert.AreEqual("", serverRelativeUrl);
+        }
+
+        [TestMethod]
+        public void Regex_SubSiteUrl_Match4()
+        {
+            var input = "https://myHost.sharepoint.com/sites/a/b/pages/test.aspx";
+            var pattern = Constants.RegexMisc.AnySubSiteUrl;
+
+            var match = Regex.Match(input, pattern, RegexOptions.IgnoreCase, Regex.InfiniteMatchTimeout);
+            var serverRelativeUrl = match.Groups[Constants.RegexGroupNames.ServerRelativeUrl].Value;
+
+            Assert.IsTrue(match.Success);
+            Assert.IsFalse(string.IsNullOrEmpty(serverRelativeUrl));
+            Assert.AreEqual("/sites/a/b/pages/test.aspx", serverRelativeUrl);
+        }
+
+        #endregion
+
     }
 }

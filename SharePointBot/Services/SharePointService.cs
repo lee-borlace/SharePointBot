@@ -24,8 +24,10 @@ namespace SharePointBot.Services
         /// <param name="title"></param>
         /// <param name="accessToken"></param>
         /// <returns>A BotSite representing the web if it exists, otherwise null.</returns>
-        public async Task<BotSite> GetWebByTitle(string title, AuthResult auth, IBotContext context)
+        public async Task<List<BotSite>> SearchForWeb(string title, AuthResult auth, IBotContext context)
         {
+            var retVal = new List<BotSite>();
+            
             // We need to know the resource ID. This *should be* stored in bot state from when user logged in.
             string lastSiteCollectionUrl = null;
             if (!context.PrivateConversationData.TryGetValue<string>(Constants.StateKeys.LastLoggedInSiteCollectionUrl, out lastSiteCollectionUrl))
@@ -52,25 +54,21 @@ namespace SharePointBot.Services
                 {
                     if (results.Value[0].RowCount > 0)
                     {
-                        var row = results.Value[0].ResultRows.First();
-
-                        return new BotSite
+                        foreach (var row in results.Value[0].ResultRows)
                         {
-                            Alias = string.Empty,
-                            Id = Guid.Empty,
-                            Title = row["Title"].ToString(),
-                            Url = row["SPWebUrl"]?.ToString()
-                        };
+                            retVal.Add(new BotSite
+                            {
+                                Alias = string.Empty,
+                                Id = Guid.Empty,
+                                Title = row["Title"].ToString(),
+                                Url = row["SPWebUrl"]?.ToString()
+                            });
+                        }
                     }
-
-
                 }
-
-
             }
 
-
-            return null;
+            return retVal;
         }
     }
 }
