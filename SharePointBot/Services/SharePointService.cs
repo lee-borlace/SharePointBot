@@ -30,7 +30,7 @@ namespace SharePointBot.Services
             
             // We need to know the resource ID. This *should be* stored in bot state from when user logged in.
             string lastSiteCollectionUrl = null;
-            if (!context.PrivateConversationData.TryGetValue<string>(Constants.StateKeys.LastLoggedInSiteCollectionUrl, out lastSiteCollectionUrl))
+            if (!context.UserData.TryGetValue<string>(Constants.StateKeys.LastLoggedInSiteCollectionUrl, out lastSiteCollectionUrl))
             {
                 throw new InvalidOperationException("Could not find current tenant URL in bot state.");
             }

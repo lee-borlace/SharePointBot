@@ -28,7 +28,7 @@ namespace SharePointBot.Dialogs
             // Build up prompt depending on whether previous site collection URL is recorded in state.
             string prompt = Constants.Responses.LogIntoWhichSiteCollection;
             string lastSiteCollectionUrl = null;
-            var lastSiteCollectionUrlPresent = context.PrivateConversationData.TryGetValue<string>(Constants.StateKeys.LastLoggedInSiteCollectionUrl, out lastSiteCollectionUrl);
+            var lastSiteCollectionUrlPresent = context.UserData.TryGetValue<string>(Constants.StateKeys.LastLoggedInSiteCollectionUrl, out lastSiteCollectionUrl);
 
             if (lastSiteCollectionUrlPresent)
             {
@@ -62,7 +62,7 @@ namespace SharePointBot.Dialogs
             {
                 string prompt = Constants.Responses.LogIntoWhichSiteCollection;
                 string lastSiteCollectionUrl = null;
-                var lastSiteCollectionUrlPresent = context.PrivateConversationData.TryGetValue<string>(Constants.StateKeys.LastLoggedInSiteCollectionUrl, out lastSiteCollectionUrl);
+                var lastSiteCollectionUrlPresent = context.UserData.TryGetValue<string>(Constants.StateKeys.LastLoggedInSiteCollectionUrl, out lastSiteCollectionUrl);
 
                 // Last URL is present - use it.
                 if (!string.IsNullOrEmpty(lastSiteCollectionUrl))
@@ -83,10 +83,10 @@ namespace SharePointBot.Dialogs
 
             if (valid)
             {
-                context.PrivateConversationData.SetValue<string>(Constants.StateKeys.LastLoggedInSiteCollectionUrl, siteCollectionUrl);
+                context.UserData.SetValue<string>(Constants.StateKeys.LastLoggedInSiteCollectionUrl, siteCollectionUrl);
 
                 var tenantUrl = UrlUtility.GetTenantUrlFromSiteCollectionUrl(siteCollectionUrl);
-                context.PrivateConversationData.SetValue<string>(Constants.StateKeys.LastLoggedInTenantUrl, tenantUrl);
+                context.UserData.SetValue<string>(Constants.StateKeys.LastLoggedInTenantUrl, tenantUrl);
 
                 await _authenticationService.ForwardToBotAuthLoginDialog(tenantUrl, context, context.Activity as IMessageActivity, AfterLogOn);
             }

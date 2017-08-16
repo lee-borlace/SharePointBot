@@ -126,7 +126,7 @@ namespace SharePointBot.Dialogs
         {
             if (_site != null)
             {
-                await StoreSiteInBotState(context);
+                await StoreSiteInBotStateAndFinaliseDialog(context);
             }
             else
             {
@@ -147,7 +147,7 @@ namespace SharePointBot.Dialogs
         {
             SiteTitleOrAlias = await result;
             await GetSpecifiedSite(ctx);
-            await StoreSiteInBotState(ctx);
+            await StoreSiteInBotStateAndFinaliseDialog(ctx);
         }
 
 
@@ -180,13 +180,11 @@ namespace SharePointBot.Dialogs
                    Constants.Responses.ChooseSite,
                    Constants.Responses.DidntUnderstand + Constants.Responses.PleaseChooseAnOption,
                    Constants.Misc.DialogAttempts,
-                   descriptions: sites.Select(s => $"{s.Title} ({UrlUtility.GetServerRelativeUrl(s.Url)})")
+                   descriptions: sites.Select(s => $"{s.Title} ({UrlUtility.GetServerRelativeUrl(s.Url)})"),
+                   promptStyle: PromptStyle.Auto
                 );
 
                 context.Call<BotSite>(choose, AfterChoiceSelected);
-
-             
-
             }
 
         }
@@ -204,7 +202,7 @@ namespace SharePointBot.Dialogs
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        private async Task StoreSiteInBotState(IDialogContext context)
+        private async Task StoreSiteInBotStateAndFinaliseDialog(IDialogContext context)
         {
             if (_site != null)
             {
