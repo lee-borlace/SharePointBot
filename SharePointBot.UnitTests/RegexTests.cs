@@ -16,7 +16,7 @@ namespace SharePointBot.UnitTests
         #region Match
 
         [TestMethod] 
-        public void SPOSiteCollectionUrl_Match1()
+        public void Regex_SPOSiteCollectionUrl_Match1()
         {
             var input = "https://myHost.sharepoint.com";
             var pattern = Constants.RegexMisc.SiteCollectionUrl;
@@ -30,7 +30,7 @@ namespace SharePointBot.UnitTests
         }
 
         [TestMethod]
-        public void SPOSiteCollectionUrl_Match2()
+        public void Regex_SPOSiteCollectionUrl_Match2()
         {
             var input = "https://myHost.sharepoint.com/sites/SiteColl1";
             var pattern = Constants.RegexMisc.SiteCollectionUrl;
@@ -44,7 +44,7 @@ namespace SharePointBot.UnitTests
         }
 
         [TestMethod]
-        public void SPOSiteCollectionUrl_Match3()
+        public void Regex_SPOSiteCollectionUrl_Match3()
         {
             var input = "   https://myHost.sharepoint.com/sites/SiteColl1  ";
             var pattern = Constants.RegexMisc.SiteCollectionUrl;
@@ -59,7 +59,7 @@ namespace SharePointBot.UnitTests
 
 
         [TestMethod]
-        public void SPOSiteCollectionUrl_Match4()
+        public void Regex_SPOSiteCollectionUrl_Match4()
         {
             var input = "   https://myHost.sharepoint.com/teams/SiteColl1  ";
             var pattern = Constants.RegexMisc.SiteCollectionUrl;
@@ -73,7 +73,7 @@ namespace SharePointBot.UnitTests
         }
 
         [TestMethod]
-        public void SPOSiteCollectionUrl_Match5()
+        public void Regex_SPOSiteCollectionUrl_Match5()
         {
             var input = "   https://myHost.sharepoint.com/whatever/SiteColl1  ";
             var pattern = Constants.RegexMisc.SiteCollectionUrl;
@@ -87,7 +87,7 @@ namespace SharePointBot.UnitTests
         }
 
         [TestMethod]
-        public void SPOSiteCollectionUrl_Match6()
+        public void Regex_SPOSiteCollectionUrl_Match6()
         {
             var input = "   https://awesomesite.sharepoint.com/whatever/SiteColl2  ";
             var pattern = Constants.RegexMisc.SiteCollectionUrl;
@@ -107,7 +107,7 @@ namespace SharePointBot.UnitTests
 
 
         [TestMethod]
-        public void SPOSiteCollectionUrl_NoHttps_NoMatch1()
+        public void Regex_SPOSiteCollectionUrl_NoHttps_NoMatch1()
         {
             var input = "http://mySiteCollection.sharepoint.com";
             var pattern = Constants.RegexMisc.SiteCollectionUrl;
@@ -117,7 +117,7 @@ namespace SharePointBot.UnitTests
         }
 
         [TestMethod]
-        public void SPOSiteCollectionUrl_NotSharePointDotCom_NoMatch2()
+        public void Regex_SPOSiteCollectionUrl_NotSharePointDotCom_NoMatch2()
         {
             var input = "https://mySiteCollection.onmicrosoft.com";
             var pattern = Constants.RegexMisc.SiteCollectionUrl;
@@ -127,7 +127,7 @@ namespace SharePointBot.UnitTests
         }
 
         [TestMethod]
-        public void SPOSiteCollectionUrl_SubsiteSpecified_NoMatch3()
+        public void Regex_SPOSiteCollectionUrl_SubsiteSpecified_NoMatch3()
         {
             var input = "https://mySiteCollection.sharepoint.com/sites/siteA/siteB";
             var pattern = Constants.RegexMisc.SiteCollectionUrl;

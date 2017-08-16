@@ -17,7 +17,12 @@ namespace SharePointBot.UnitTests.Mocks
     public class AuthenticationServiceMock : IAuthenticationService
     {
         /// <summary>
-        /// Instead of forwarding to authentication prompt and then returning, just calls the callback with a fake access token.
+        /// Keep track of whether we are logged in.
+        /// </summary>
+        private bool _loggedIn;
+
+        /// <summary>
+        /// Instead of forwarding to authentication prompt and then returning, pretends authentication works and just calls the callback with a fake access token.
         /// </summary>
         /// <param name="tenantUrl">The tenant URL.</param>
         /// <param name="context">The context.</param>
@@ -26,12 +31,20 @@ namespace SharePointBot.UnitTests.Mocks
         /// <returns></returns>
         public async Task ForwardToBotAuthLoginDialog(string tenantUrl, IDialogContext context, IMessageActivity message, ResumeAfter<AuthResult> loginCallBack)
         {
-            await loginCallBack(context, null);
+            _loggedIn = true;
+            await loginCallBack(context, FakeAuthResult as IAwaitable<AuthResult>);
         }
 
-    public Task<AuthResult> GetAccessToken(IDialogContext context)
+        public async Task<AuthResult> GetAccessToken(IDialogContext context)
         {
-            throw new NotImplementedException();
+            if (_loggedIn)
+            {
+                return FakeAuthResult;
+            }
+            else
+            {
+                return null;
+            }
         }
 
         public AuthenticationOptions GetDefaultOffice365Options()
@@ -39,9 +52,21 @@ namespace SharePointBot.UnitTests.Mocks
             throw new NotImplementedException();
         }
 
-        public Task LogOut(IDialogContext context)
+        public async Task LogOut(IDialogContext context)
         {
-            throw new NotImplementedException();
+            _loggedIn = false;
         }
+
+        private AuthResult FakeAuthResult
+        {
+            get
+            {
+                return new AuthResult
+                {
+
+                };
+            }
+        }
+
     }
 }

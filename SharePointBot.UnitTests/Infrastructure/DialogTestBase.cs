@@ -308,6 +308,28 @@ namespace Microsoft.Bot.Builder.Tests
             Assert.AreEqual(expectedResponse, toUser.Text);
         }
 
+        /// <summary>
+        /// Send a message but don't wait for a response.
+        /// </summary>
+        /// <param name="request">The request.</param>
+        /// <returns></returns>
+        protected async Task SendMessageNoResponse(string request)
+        {
+            var toBot = MakeTestMessageCommonConversation();
+            toBot.Text = request;
+
+            using (var scope = DialogModule.BeginLifetimeScope(_container, toBot))
+            {
+                DialogModule_MakeRoot.Register(scope, _makeRoot);
+
+                using (new LocalizedScope(toBot.Locale))
+                {
+                    var task = scope.Resolve<IPostToBot>();
+                    await task.PostAsync(toBot, CancellationToken.None);
+                }
+            }
+        }
+
     }
 
 }

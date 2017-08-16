@@ -15,8 +15,9 @@ using SharePointBot.Services.Interfaces;
 using SharePointBot.Services;
 using Microsoft.Bot.Builder.Internals.Fibers;
 using SharePointBot.UnitTests.Mocks;
+using SharePointBot.UnitTests.Dialogs;
 
-namespace SharePointBot.UnitTests.Dialogs
+namespace SharePointBot.UnitTests.Conversations
 {
     [TestClass]
     public class RootDialogTests : SharePointBotDialogTestBase
@@ -27,7 +28,7 @@ namespace SharePointBot.UnitTests.Dialogs
         /// </summary>
         /// <returns></returns>
         [TestMethod]
-        public async Task RootDialog_Conversation_Login()
+        public async Task Conversation_LoginLogoutSequence()
         {
             var authService = new AuthenticationServiceMock();
             var spBotStateServiceMock = new Mock<ISharePointBotStateService>();
@@ -58,9 +59,17 @@ namespace SharePointBot.UnitTests.Dialogs
                         "login",
                        Constants.Responses.LogIntoWhichSiteCollection);
 
+                    const string SiteCollectionUrl = "https://mytenant.sharepoint.com/sites/mysitecollection";
+
                     await SendTextAndAssertResponse(
-                        "https://mytenant.sharepoint.com/sites/mysitecollection",
+                        SiteCollectionUrl,
                         Constants.Responses.LoggedIn);
+
+                    await SendMessageNoResponse("logout");
+
+                    await SendTextAndAssertResponse(
+                        "login",
+                        Constants.Responses.LogIntoWhichSiteCollection + string.Format(Constants.Responses.LastSiteCollection, SiteCollectionUrl));
                 }
             }
 
