@@ -43,11 +43,21 @@ namespace SharePointBot
 
 #if DEBUG
 #else  
-            builder.RegisterModule(new AzureModule(Assembly.GetExecutingAssembly()));
 
-            builder.RegisterModule(new TableLoggerModule(
-              CloudStorageAccount.Parse(ConfigurationManager.ConnectionStrings["StorageConnectionString"].ConnectionString),
-              Constants.Azure.TableNameActivityLogging));
+            // Register TableLoggerModule to log activities if connection string is specified.
+            const string storageConnectionString = "StorageConnectionString";
+            if (ConfigurationManager.ConnectionStrings[storageConnectionString] != null)
+            {
+                if (!string.IsNullOrEmpty(ConfigurationManager.ConnectionStrings[storageConnectionString].ConnectionString))
+                {
+                    builder.RegisterModule(new AzureModule(Assembly.GetExecutingAssembly()));
+
+                    builder.RegisterModule(new TableLoggerModule(
+                      CloudStorageAccount.Parse(ConfigurationManager.ConnectionStrings[storageConnectionString].ConnectionString),
+                      Constants.Azure.TableNameActivityLogging));
+                }
+            }
+           
 #endif
 
             builder.RegisterApiControllers(Assembly.GetExecutingAssembly());
