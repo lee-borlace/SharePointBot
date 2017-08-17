@@ -3,6 +3,7 @@ using Autofac.Integration.WebApi;
 using Microsoft.Bot.Builder.Azure;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Dialogs.Internals;
+using Microsoft.Bot.Builder.History;
 using Microsoft.Bot.Connector;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Table;
@@ -40,24 +41,16 @@ namespace SharePointBot
             builder.RegisterModule(new DialogModule());
             builder.RegisterModule(new SharePointBotModule());
 
+            // If specified in config, register trace logger for activitities. This will log all activities to whichever trace listeners are set up.
+            bool traceAllActivities = false;
+            bool.TryParse(ConfigurationManager.AppSettings["TraceAllActivities"], out traceAllActivities);
+            if (traceAllActivities)
+            {
+                builder.RegisterType<TraceActivityLogger>().AsImplementedInterfaces().InstancePerDependency();
+            }
 
 #if DEBUG
-#else  
-
-            // Register TableLoggerModule to log activities if connection string is specified.
-            const string storageConnectionString = "StorageConnectionString";
-            if (ConfigurationManager.ConnectionStrings[storageConnectionString] != null)
-            {
-                if (!string.IsNullOrEmpty(ConfigurationManager.ConnectionStrings[storageConnectionString].ConnectionString))
-                {
-                    builder.RegisterModule(new AzureModule(Assembly.GetExecutingAssembly()));
-
-                    builder.RegisterModule(new TableLoggerModule(
-                      CloudStorageAccount.Parse(ConfigurationManager.ConnectionStrings[storageConnectionString].ConnectionString),
-                      Constants.Azure.TableNameActivityLogging));
-                }
-            }
-           
+#else
 #endif
 
             builder.RegisterApiControllers(Assembly.GetExecutingAssembly());
@@ -77,13 +70,9 @@ namespace SharePointBot
             {
                 builder.RegisterModule(new SharePointBotModule());
 
-                builder.RegisterModule(new AzureModule(Assembly.GetExecutingAssembly()));
-
-
 #if DEBUG
-#else                
+#else
                 // TODO : See issue #1 - this causes issues when commented in. Need to work out how to use Azure Storage.
-
                 //builder.RegisterModule(new AzureModule(Assembly.GetExecutingAssembly()));
 
                 //var store = new TableBotDataStore(ConfigurationManager.AppSettings["StorageConnectionString"]);
