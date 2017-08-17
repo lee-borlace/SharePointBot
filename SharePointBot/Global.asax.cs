@@ -4,6 +4,8 @@ using Microsoft.Bot.Builder.Azure;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Dialogs.Internals;
 using Microsoft.Bot.Connector;
+using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Table;
 using SharePointBot.AutofacModules;
 using SharePointBot.Dialogs;
 using System;
@@ -27,7 +29,7 @@ namespace SharePointBot
             RegisterBotDependencies();
         }
 
-       
+
         /// <summary>
         /// Register global dependencies for Web API.
         /// </summary>
@@ -37,6 +39,16 @@ namespace SharePointBot
 
             builder.RegisterModule(new DialogModule());
             builder.RegisterModule(new SharePointBotModule());
+
+
+#if DEBUG
+#else  
+            builder.RegisterModule(new AzureModule(Assembly.GetExecutingAssembly()));
+
+            builder.RegisterModule(new TableLoggerModule(
+              CloudStorageAccount.Parse(ConfigurationManager.ConnectionStrings["StorageConnectionString"].ConnectionString),
+              Constants.Azure.TableNameActivityLogging));
+#endif
 
             builder.RegisterApiControllers(Assembly.GetExecutingAssembly());
             var config = GlobalConfiguration.Configuration;
@@ -51,8 +63,12 @@ namespace SharePointBot
         /// </summary>
         private void RegisterBotDependencies()
         {
-            Conversation.UpdateContainer(builder => {
+            Conversation.UpdateContainer(builder =>
+            {
                 builder.RegisterModule(new SharePointBotModule());
+
+                builder.RegisterModule(new AzureModule(Assembly.GetExecutingAssembly()));
+
 
 #if DEBUG
 #else                

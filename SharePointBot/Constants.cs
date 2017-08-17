@@ -100,5 +100,12 @@ namespace SharePointBot
             public const string SiteUrl = "webUrl";
         }
 
+
+        public static class Azure
+        {
+            public const string TableNameActivityLogging = "SharePointBotActivityLogging";
+        }
+
+
     }
 }
