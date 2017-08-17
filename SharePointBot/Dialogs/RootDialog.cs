@@ -56,7 +56,7 @@ namespace SharePointBot.Dialogs
         [LuisIntent("Greeting")]
         public async Task Greeting(IDialogContext context, LuisResult result)
         {
-            await context.PostAsync(Constants.Responses.HowCanIHelp);
+            await context.PostAsync(Constants.Responses.Greeting);
             context.Wait(MessageReceived);
         }
 
