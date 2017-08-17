@@ -255,6 +255,7 @@
     <Content Include="packages.config">
       <SubType>Designer</SubType>
     </Content>
+    <Content Include="LUIS\SharePoint Bot.json" />
     <None Include="Properties\PublishProfiles\SharePointBot2017 - Web Deploy.pubxml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>

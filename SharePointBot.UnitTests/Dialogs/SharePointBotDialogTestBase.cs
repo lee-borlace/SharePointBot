@@ -16,22 +16,9 @@ namespace SharePointBot.UnitTests.Dialogs
     /// Base class for dialog tests for this bot.
     /// </summary>
     /// <seealso cref="Microsoft.Bot.Builder.Tests.DialogTestBase" />
-    public class SharePointBotDialogTestBase : DialogTestBase
+    public class SharePointBotDialogTestBase : LuisTestBase
     {
-        // TODO : Put this back in if I ever work out how to call a supplied delegate parameter from mocked call!
-        //protected Mock<IAuthenticationService> GetMockedAuthenticationService()
-        //{
-        //    var mockedService = new Mock<IAuthenticationService>();
-
-        //    mockedService.Setup(s => s.ForwardToBotAuthLoginDialog(
-        //        It.IsAny<string>(),
-        //        It.IsAny<IDialogContext>(),
-        //        It.IsAny<IMessageActivity>(),
-        //        It.IsAny<ResumeAfter<AuthResult>>()
-        //        )).Callback(() => {  });
-
-        //    return mockedService;
-        //}
+       
 
 
     }

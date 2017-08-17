@@ -110,6 +110,7 @@
     <Compile Include="Infrastructure\ConversationTest.cs" />
     <Compile Include="Infrastructure\DialogTestBase.cs" />
     <Compile Include="Infrastructure\FiberTests.cs" />
+    <Compile Include="Infrastructure\LuisTests.cs" />
     <Compile Include="Mocks\AuthenticationServiceMock.cs" />
     <Compile Include="RegexTests.cs" />
     <Compile Include="Utility\UrlUtilityTests.cs" />

@@ -22,7 +22,6 @@ using System.Linq;
 
 namespace SharePointBot.Dialogs
 {
-    [LuisModel("7716c1d3-40ea-4f10-8397-956c37074e70", "41f72c548e2a42a1b5d900c9ccf2d4fe")]
     [Serializable]
     public class RootDialog : LuisDialog<object>
     {
@@ -35,7 +34,8 @@ namespace SharePointBot.Dialogs
             LogInDialog loginDialog, 
             SelectSiteDialog selectSiteDialog, 
             GetSiteDialog getSiteDialog,
-            IAuthenticationService authenticationService)
+            IAuthenticationService authenticationService,
+            ILuisService luis) : base(luis)
         {
             _loginDialog = loginDialog;
             _selectSiteDialog = selectSiteDialog;

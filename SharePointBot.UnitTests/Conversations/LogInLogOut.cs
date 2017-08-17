@@ -16,6 +16,7 @@ using SharePointBot.Services;
 using Microsoft.Bot.Builder.Internals.Fibers;
 using SharePointBot.UnitTests.Mocks;
 using SharePointBot.UnitTests.Dialogs;
+using Microsoft.Bot.Builder.Luis;
 
 namespace SharePointBot.UnitTests.Conversations
 {
@@ -24,7 +25,7 @@ namespace SharePointBot.UnitTests.Conversations
     {
 
         /// <summary>
-        /// 
+        /// Log in / out - not Skype.
         /// </summary>
         /// <returns></returns>
         [TestMethod]
@@ -34,12 +35,16 @@ namespace SharePointBot.UnitTests.Conversations
             var spBotStateServiceMock = new Mock<ISharePointBotStateService>();
             var spServiceMock = new Mock<ISharePointService>();
 
-            using (new FiberTestBase.ResolveMoqAssembly(authService, spBotStateServiceMock.Object, spServiceMock.Object))
+            var luisMock = new Mock<ILuisService>(MockBehavior.Strict);
+            SetupLuis<RootDialog>(luisMock, "login", d => d.LogIn(null, null), 1.0);
+            SetupLuis<RootDialog>(luisMock, "logout", d => d.LogOut(null, null), 1.0);
+
+            using (new FiberTestBase.ResolveMoqAssembly(luisMock.Object, authService, spBotStateServiceMock.Object, spServiceMock.Object))
             {
                 // Create the container which will be used when testing this conversation.
-                using (_container = Build(Options.ResolveDialogFromContainer, authService, spBotStateServiceMock.Object, spServiceMock.Object))
+                using (_container = Build(Options.ResolveDialogFromContainer, luisMock.Object, authService, spBotStateServiceMock.Object, spServiceMock.Object))
                 {
-                    RegisterDependencies(_container, authService, spBotStateServiceMock, spServiceMock);
+                    RegisterDependencies(_container, authService, spBotStateServiceMock, spServiceMock, luisMock);
 
                     // Start new conversation with new user.
                     _conversationId = Guid.NewGuid();
@@ -85,10 +90,14 @@ namespace SharePointBot.UnitTests.Conversations
                 }
             }
 
+            // verify we're actually calling the LUIS mock and not the actual LUIS service
+            luisMock.VerifyAll();
+
         }
 
+
         /// <summary>
-        /// 
+        /// Log in / out - Skype.
         /// </summary>
         /// <returns></returns>
         [TestMethod]
@@ -98,12 +107,16 @@ namespace SharePointBot.UnitTests.Conversations
             var spBotStateServiceMock = new Mock<ISharePointBotStateService>();
             var spServiceMock = new Mock<ISharePointService>();
 
-            using (new FiberTestBase.ResolveMoqAssembly(authService, spBotStateServiceMock.Object, spServiceMock.Object))
+            var luisMock = new Mock<ILuisService>(MockBehavior.Strict);
+            SetupLuis<RootDialog>(luisMock, "login", d => d.LogIn(null, null), 1.0);
+            SetupLuis<RootDialog>(luisMock, "logout", d => d.LogOut(null, null), 1.0);
+
+            using (new FiberTestBase.ResolveMoqAssembly(luisMock.Object, authService, spBotStateServiceMock.Object, spServiceMock.Object))
             {
                 // Create the container which will be used when testing this conversation.
-                using (_container = Build(Options.ResolveDialogFromContainer, authService, spBotStateServiceMock.Object, spServiceMock.Object))
+                using (_container = Build(Options.ResolveDialogFromContainer, luisMock.Object, authService, spBotStateServiceMock.Object, spServiceMock.Object))
                 {
-                    RegisterDependencies(_container, authService, spBotStateServiceMock, spServiceMock);
+                    RegisterDependencies(_container, authService, spBotStateServiceMock, spServiceMock, luisMock);
 
                     // Start new conversation with new user.
                     _conversationId = Guid.NewGuid();
@@ -150,7 +163,76 @@ namespace SharePointBot.UnitTests.Conversations
                 }
             }
 
+            // verify we're actually calling the LUIS mock and not the actual LUIS service
+            luisMock.VerifyAll();
+
         }
+
+
+        ///// <summary>
+        ///// Log in / out - Skype.
+        ///// </summary>
+        ///// <returns></returns>
+        //[TestMethod]
+        //public async Task Conversation_LoginLogoutSequence_SimulateSkype()
+        //{
+        //    var authService = new AuthenticationServiceMock(true);
+        //    var spBotStateServiceMock = new Mock<ISharePointBotStateService>();
+        //    var spServiceMock = new Mock<ISharePointService>();
+
+        //    using (new FiberTestBase.ResolveMoqAssembly(authService, spBotStateServiceMock.Object, spServiceMock.Object))
+        //    {
+        //        // Create the container which will be used when testing this conversation.
+        //        using (_container = Build(Options.ResolveDialogFromContainer, authService, spBotStateServiceMock.Object, spServiceMock.Object))
+        //        {
+        //            RegisterDependencies(_container, authService, spBotStateServiceMock, spServiceMock);
+
+        //            // Start new conversation with new user.
+        //            _conversationId = Guid.NewGuid();
+        //            _user = Guid.NewGuid().ToString();
+
+        //            // Ensure root dialog is captured.
+        //            _makeRoot = () => _container.Resolve<RootDialog>();
+
+        //            await SendTextAndAssertResponse(
+        //                "login",
+        //                Constants.Responses.LogIntoWhichSiteCollection);
+
+        //            // "Last" isn't a valid response at this point.
+        //            await SendTextAndAssertResponse(
+        //                "last",
+        //                Constants.Responses.InvalidSiteCollectionUrl);
+
+        //            await SendTextAndAssertResponse(
+        //                "login",
+        //               Constants.Responses.LogIntoWhichSiteCollection);
+
+        //            const string SiteCollectionUrl = @"https://mytenant.sharepoint.com/sites/mysitecollection";
+        //            string SiteCollectionUrlSkypeified = $@"<a href=""{SiteCollectionUrl}"">{SiteCollectionUrl}</a>";
+
+        //            await SendTextAndAssertResponse(
+        //                SiteCollectionUrlSkypeified,
+        //                Constants.Responses.LoggedIn);
+
+        //            await SendMessageNoResponse("logout");
+
+        //            // Last site collection stored in bot state, so prompt that user can re-use that one.
+        //            await SendTextAndAssertResponse(
+        //                "login",
+        //                Constants.Responses.LogIntoWhichSiteCollection + string.Format(Constants.Responses.LastSiteCollection, SiteCollectionUrl));
+
+        //            // Start new conversation with new user.
+        //            _conversationId = Guid.NewGuid();
+        //            _user = Guid.NewGuid().ToString();
+
+        //            // New user so last site collection won't be stored in bot state and bot won't prompt for prior site collection.
+        //            await SendTextAndAssertResponse(
+        //               "login",
+        //               Constants.Responses.LogIntoWhichSiteCollection);
+        //        }
+        //    }
+
+        //}
 
 
 
@@ -158,11 +240,16 @@ namespace SharePointBot.UnitTests.Conversations
             IContainer container,
             IAuthenticationService authService,
             Mock<ISharePointBotStateService> spBotStateService,
-            Mock<ISharePointService> spService)
+            Mock<ISharePointService> spService,
+            Mock<ILuisService> luisMock
+            )
         {
             var builder = new ContainerBuilder();
 
             builder.RegisterType<RootDialog>().As<IDialog<object>>().InstancePerDependency();
+
+            builder.Register(c => new LuisModelAttribute("7716c1d3-40ea-4f10-8397-956c37074e70", "41f72c548e2a42a1b5d900c9ccf2d4fe")).AsSelf().AsImplementedInterfaces().SingleInstance();
+            builder.Register(c => luisMock.Object).Keyed<ILuisService>(FiberModule.Key_DoNotSerialize).As<ILuisService>().SingleInstance();
 
             builder.Register(c => spBotStateService.Object)
                 .Keyed<ISharePointBotStateService>(FiberModule.Key_DoNotSerialize)

@@ -1,0 +1,239 @@
+{
+  "luis_schema_version": "2.1.0",
+  "versionId": "0.1",
+  "name": "SharePoint Bot",
+  "desc": "",
+  "culture": "en-us",
+  "intents": [
+    {
+      "name": "GetCurrentSite"
+    },
+    {
+      "name": "Greeting"
+    },
+    {
+      "name": "LogIn"
+    },
+    {
+      "name": "LogOut"
+    },
+    {
+      "name": "None"
+    },
+    {
+      "name": "SelectSite"
+    }
+  ],
+  "entities": [
+    {
+      "name": "SiteTitleOrAlias"
+    }
+  ],
+  "composites": [],
+  "closedLists": [],
+  "bing_entities": [],
+  "actions": [],
+  "model_features": [],
+  "regex_features": [],
+  "utterances": [
+    {
+      "text": "hello",
+      "intent": "Greeting",
+      "entities": []
+    },
+    {
+      "text": "hi",
+      "intent": "Greeting",
+      "entities": []
+    },
+    {
+      "text": "login",
+      "intent": "LogIn",
+      "entities": []
+    },
+    {
+      "text": "good day",
+      "intent": "Greeting",
+      "entities": []
+    },
+    {
+      "text": "where am i",
+      "intent": "GetCurrentSite",
+      "entities": []
+    },
+    {
+      "text": "log out",
+      "intent": "LogOut",
+      "entities": []
+    },
+    {
+      "text": "sign out",
+      "intent": "LogOut",
+      "entities": []
+    },
+    {
+      "text": "logout",
+      "intent": "LogOut",
+      "entities": []
+    },
+    {
+      "text": "sup",
+      "intent": "Greeting",
+      "entities": []
+    },
+    {
+      "text": "log in",
+      "intent": "LogIn",
+      "entities": []
+    },
+    {
+      "text": "how's it going",
+      "intent": "Greeting",
+      "entities": []
+    },
+    {
+      "text": "gday",
+      "intent": "Greeting",
+      "entities": []
+    },
+    {
+      "text": "g'day",
+      "intent": "Greeting",
+      "entities": []
+    },
+    {
+      "text": "sign in",
+      "intent": "LogIn",
+      "entities": []
+    },
+    {
+      "text": "signin",
+      "intent": "LogIn",
+      "entities": []
+    },
+    {
+      "text": "signout",
+      "intent": "LogOut",
+      "entities": []
+    },
+    {
+      "text": "gidday",
+      "intent": "Greeting",
+      "entities": []
+    },
+    {
+      "text": "what is the current site",
+      "intent": "GetCurrentSite",
+      "entities": []
+    },
+    {
+      "text": "what site have i selected",
+      "intent": "GetCurrentSite",
+      "entities": []
+    },
+    {
+      "text": "what site am i on",
+      "intent": "GetCurrentSite",
+      "entities": []
+    },
+    {
+      "text": "go to website dsadsa",
+      "intent": "SelectSite",
+      "entities": [
+        {
+          "entity": "SiteTitleOrAlias",
+          "startPos": 14,
+          "endPos": 19
+        }
+      ]
+    },
+    {
+      "text": "go to web saddsa",
+      "intent": "SelectSite",
+      "entities": [
+        {
+          "entity": "SiteTitleOrAlias",
+          "startPos": 10,
+          "endPos": 15
+        }
+      ]
+    },
+    {
+      "text": "select zzz",
+      "intent": "SelectSite",
+      "entities": [
+        {
+          "entity": "SiteTitleOrAlias",
+          "startPos": 7,
+          "endPos": 9
+        }
+      ]
+    },
+    {
+      "text": "go to zzz",
+      "intent": "SelectSite",
+      "entities": [
+        {
+          "entity": "SiteTitleOrAlias",
+          "startPos": 6,
+          "endPos": 8
+        }
+      ]
+    },
+    {
+      "text": "go to site sitetitleoralias",
+      "intent": "SelectSite",
+      "entities": [
+        {
+          "entity": "SiteTitleOrAlias",
+          "startPos": 11,
+          "endPos": 26
+        }
+      ]
+    },
+    {
+      "text": "select site sitename",
+      "intent": "SelectSite",
+      "entities": [
+        {
+          "entity": "SiteTitleOrAlias",
+          "startPos": 12,
+          "endPos": 19
+        }
+      ]
+    },
+    {
+      "text": "select site dev",
+      "intent": "SelectSite",
+      "entities": [
+        {
+          "entity": "SiteTitleOrAlias",
+          "startPos": 12,
+          "endPos": 14
+        }
+      ]
+    },
+    {
+      "text": "select site enable",
+      "intent": "SelectSite",
+      "entities": [
+        {
+          "entity": "SiteTitleOrAlias",
+          "startPos": 12,
+          "endPos": 17
+        }
+      ]
+    },
+    {
+      "text": "select site fff",
+      "intent": "SelectSite",
+      "entities": [
+        {
+          "entity": "SiteTitleOrAlias",
+          "startPos": 12,
+          "endPos": 14
+        }
+      ]
+    }
+  ]
+}
