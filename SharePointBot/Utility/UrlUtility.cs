@@ -51,5 +51,25 @@ namespace SharePointBot.Utility
 
             return retVal;
         }
+
+        /// <summary>
+        /// Given an anchor tag, extract the href attribute.
+        /// </summary>
+        /// <param name="input">The input.</param>
+        /// <returns>Href attribute if found in valid anchor tag, otherwise return entire input</returns>
+        public static string ExtractHrefFromAnchorTag(string input)
+        {
+            string retVal = input;
+
+            var match = Regex.Match(input, Constants.RegexMisc.AnchorTag, RegexOptions.IgnoreCase, Regex.InfiniteMatchTimeout);
+
+            if (match.Success)
+            {
+                retVal = match.Groups[Constants.RegexGroupNames.Href].Value;
+            }
+
+            return retVal;
+        }
+
     }
 }

@@ -53,6 +53,9 @@ namespace SharePointBot.Dialogs
         {
             var userResponse = await result;
 
+            // Account for Skype or other channels putting any specified URL inside an anchor tag.
+            userResponse = UrlUtility.ExtractHrefFromAnchorTag(userResponse);
+
             var valid = false;
 
             string siteCollectionUrl = string.Empty;

@@ -38,6 +38,11 @@ namespace SharePointBot
             /// URL on any sub-site, with capture group for the server-relative part.
             /// </summary>
             public const string AnySubSiteUrl = @"^\s*https:\/\/[-a-zA-Z0-9@:%._\+~#=]+\.sharepoint\.com(?<serverRelativeUrl>\/\S*)?\s*$";
+
+            /// <summary>
+            /// HTML anchor tag, with capture group for href.
+            /// </summary>
+            public const string AnchorTag = @"^\s*<a\s+href=('|"")(?<href>" + GeneralUrl + @")('|"").*>.+<\s*/a\s*>$";
         }
 
 
@@ -81,6 +86,7 @@ namespace SharePointBot
             public const string SiteTitleOrAlias = "siteTitleOrAlias";
             public const string TenantUrl = "tenantUrl";
             public const string ServerRelativeUrl = "serverRelativeUrl";
+            public const string Href = "href";
         }
 
         public static class Misc

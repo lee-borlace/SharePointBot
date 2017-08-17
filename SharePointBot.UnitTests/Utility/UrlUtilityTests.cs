@@ -97,5 +97,34 @@ namespace SharePointBot.UnitTests.Utility
 
 
         #endregion
+
+        #region ExtractHrefFromAnchorTag
+
+
+        [TestMethod]
+        public void UrlUtility_ExtractHrefFromAnchorTag_1()
+        {
+            var input = @"<a   href='https://boo.sharepoint.com/sites/dev' target=""_blank"" otherAttribute=""other stuff""  >Blah blah blah</a>";
+
+            var output = UrlUtility.ExtractHrefFromAnchorTag(input);
+
+            Assert.AreEqual("https://boo.sharepoint.com/sites/dev", output);
+        }
+
+
+        [TestMethod]
+        public void UrlUtility_ExtractHrefFromAnchorTag_2()
+        {
+            var input = "https://myHost.sharepoint.com/sites/a/b/c/d";
+
+            var output = UrlUtility.ExtractHrefFromAnchorTag(input);
+
+            Assert.AreEqual("https://myHost.sharepoint.com/sites/a/b/c/d", output);
+        }
+
+
+
+
+        #endregion
     }
 }

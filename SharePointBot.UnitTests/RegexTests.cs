@@ -200,5 +200,66 @@ namespace SharePointBot.UnitTests
 
         #endregion
 
+        #region Anchor tag
+
+        [TestMethod]
+        public void Regex_AnchorTag_Match1()
+        {
+            var input = @"<a href=""https://boo.sharepoint.com/sites/dev"">https://lee79.sharepoint.com/sites/dev</a>";
+            var pattern = Constants.RegexMisc.AnchorTag;
+
+            var match = Regex.Match(input, pattern, RegexOptions.IgnoreCase, Regex.InfiniteMatchTimeout);
+            var serverRelativeUrl = match.Groups[Constants.RegexGroupNames.Href].Value;
+
+            Assert.IsTrue(match.Success);
+            Assert.IsFalse(string.IsNullOrEmpty(serverRelativeUrl));
+            Assert.AreEqual("https://boo.sharepoint.com/sites/dev", serverRelativeUrl);
+        }
+
+
+        [TestMethod]
+        public void Regex_AnchorTag_Match2()
+        {
+            var input = @"<a href=""https://boo.sharepoint.com/sites/dev"">Blah blah blah</a>";
+            var pattern = Constants.RegexMisc.AnchorTag;
+
+            var match = Regex.Match(input, pattern, RegexOptions.IgnoreCase, Regex.InfiniteMatchTimeout);
+            var serverRelativeUrl = match.Groups[Constants.RegexGroupNames.Href].Value;
+
+            Assert.IsTrue(match.Success);
+            Assert.IsFalse(string.IsNullOrEmpty(serverRelativeUrl));
+            Assert.AreEqual("https://boo.sharepoint.com/sites/dev", serverRelativeUrl);
+        }
+
+        [TestMethod]
+        public void Regex_AnchorTag_Match3()
+        {
+            var input = @"<a href='https://boo.sharepoint.com/sites/dev'>Blah blah blah</a>";
+            var pattern = Constants.RegexMisc.AnchorTag;
+
+            var match = Regex.Match(input, pattern, RegexOptions.IgnoreCase, Regex.InfiniteMatchTimeout);
+            var serverRelativeUrl = match.Groups[Constants.RegexGroupNames.Href].Value;
+
+            Assert.IsTrue(match.Success);
+            Assert.IsFalse(string.IsNullOrEmpty(serverRelativeUrl));
+            Assert.AreEqual("https://boo.sharepoint.com/sites/dev", serverRelativeUrl);
+        }
+
+        [TestMethod]
+        public void Regex_AnchorTag_Match4()
+        {
+            var input = @"<a   href='https://boo.sharepoint.com/sites/dev' target=""_blank"" otherAttribute=""other stuff""  >Blah blah blah</a>";
+            var pattern = Constants.RegexMisc.AnchorTag;
+
+            var match = Regex.Match(input, pattern, RegexOptions.IgnoreCase, Regex.InfiniteMatchTimeout);
+            var serverRelativeUrl = match.Groups[Constants.RegexGroupNames.Href].Value;
+
+            Assert.IsTrue(match.Success);
+            Assert.IsFalse(string.IsNullOrEmpty(serverRelativeUrl));
+            Assert.AreEqual("https://boo.sharepoint.com/sites/dev", serverRelativeUrl);
+        }
+
+        #endregion
+
     }
 }

@@ -147,7 +147,6 @@ namespace SharePointBot.Dialogs
         {
             SiteTitleOrAlias = await result;
             await GetSpecifiedSite(ctx);
-            await StoreSiteInBotStateAndFinaliseDialog(ctx);
         }
 
 
