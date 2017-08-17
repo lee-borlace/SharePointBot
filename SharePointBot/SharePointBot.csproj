@@ -48,15 +48,6 @@
     <Reference Include="Autofac.Integration.WebApi, Version=4.1.0.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
       <HintPath>..\packages\Autofac.WebApi2.4.1.0\lib\net45\Autofac.Integration.WebApi.dll</HintPath>
     </Reference>
-    <Reference Include="BotAuth, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\BotAuth.AADv1.3.8.1-alpha\lib\BotAuth.dll</HintPath>
-    </Reference>
-    <Reference Include="BotAuth.AADv1, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\BotAuth.AADv1.3.8.1-alpha\lib\BotAuth.AADv1.dll</HintPath>
-    </Reference>
-    <Reference Include="BotAuth.AADv2, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\BotAuth.AADv2.3.8.1-alpha\lib\BotAuth.AADv2.dll</HintPath>
-    </Reference>
     <Reference Include="Chronic, Version=0.3.2.0, Culture=neutral, PublicKeyToken=3bd1f1ef638b0d3c, processorArchitecture=MSIL">
       <HintPath>$(SolutionDir)\packages\Chronic.Signed.0.3.2\lib\net40\Chronic.dll</HintPath>
     </Reference>
@@ -242,6 +233,7 @@
     <Compile Include="Dialogs\RootDialog.cs" />
     <Compile Include="Dialogs\GetSiteDialog.cs" />
     <Compile Include="Dialogs\SelectSiteDialog.cs" />
+    <Compile Include="Dialogs\SharePointBotAuthDialog.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -271,7 +263,16 @@
       <DependentUpon>Web.config</DependentUpon>
     </None>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\BotAuth.AADv1\BotAuth.AADv1.csproj">
+      <Project>{29703f87-6da1-4abf-9eeb-f39d1839244f}</Project>
+      <Name>BotAuth.AADv1</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BotAuth\BotAuth.csproj">
+      <Project>{54162cb7-bbec-4c8c-b7a9-70144556e3e5}</Project>
+      <Name>BotAuth</Name>
+    </ProjectReference>
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

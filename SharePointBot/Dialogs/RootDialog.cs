@@ -5,7 +5,6 @@ using Microsoft.Bot.Connector;
 using BotAuth.Models;
 using System.Configuration;
 using BotAuth.Dialogs;
-using BotAuth.AADv2;
 using System.Net.Http;
 using BotAuth;
 using System.Threading;

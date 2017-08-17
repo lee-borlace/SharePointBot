@@ -104,7 +104,8 @@ namespace SharePointBot.Dialogs
         private async Task AfterLogOn(IDialogContext context, IAwaitable<AuthResult> result)
         {
             await context.PostAsync(Constants.Responses.LoggedIn);
-            context.Done<AuthResult>(await result);
+            var authResult = await result;
+            context.Done<AuthResult>(authResult);
         }
     }
 }
