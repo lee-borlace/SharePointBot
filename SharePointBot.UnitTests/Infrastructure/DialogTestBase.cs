@@ -57,6 +57,11 @@ namespace Microsoft.Bot.Builder.Tests
         protected Guid _conversationId;
 
         /// <summary>
+        /// Name of user to simulate.
+        /// </summary>
+        protected string _user;
+
+        /// <summary>
         /// Container to use for the life of a particular test method.
         /// </summary>
         protected IContainer _container;
@@ -160,16 +165,16 @@ namespace Microsoft.Bot.Builder.Tests
         }
 
         /// <summary>
-        /// Makes a new test message for the current conversation.
+        /// Makes a new test message for the current conversation and user.
         /// </summary>
         /// <returns></returns>
-        public IMessageActivity MakeTestMessageCommonConversation()
+        public IMessageActivity MakeTestMessageCurrentUserAndConversation()
         {
             return new Activity()
             {
                 Id = Guid.NewGuid().ToString(),
                 Type = ActivityTypes.Message,
-                From = new ChannelAccount { Id = ChannelID.User },
+                From = new ChannelAccount { Id = _user },
                 Conversation = new ConversationAccount { Id = _conversationId.ToString() },
                 Recipient = new ChannelAccount { Id = ChannelID.Bot },
                 ServiceUrl = "InvalidServiceUrl",
@@ -300,7 +305,7 @@ namespace Microsoft.Bot.Builder.Tests
         /// <returns></returns>
         protected async Task SendTextAndAssertResponse(string request, string expectedResponse)
         {
-            var toBot = MakeTestMessageCommonConversation();
+            var toBot = MakeTestMessageCurrentUserAndConversation();
             toBot.Text = request;
 
             var toUser = await GetResponse(_container, _makeRoot, toBot);
@@ -315,7 +320,7 @@ namespace Microsoft.Bot.Builder.Tests
         /// <returns></returns>
         protected async Task SendMessageNoResponse(string request)
         {
-            var toBot = MakeTestMessageCommonConversation();
+            var toBot = MakeTestMessageCurrentUserAndConversation();
             toBot.Text = request;
 
             using (var scope = DialogModule.BeginLifetimeScope(_container, toBot))

@@ -41,8 +41,9 @@ namespace SharePointBot.UnitTests.Conversations
                 {
                     RegisterDependencies(_container, authService, spBotStateServiceMock, spServiceMock);
 
-                    // Create common conversation ID to use for this conversation.
+                    // Start new conversation with new user.
                     _conversationId = Guid.NewGuid();
+                    _user = Guid.NewGuid().ToString();
 
                     // Ensure root dialog is captured.
                     _makeRoot = () => _container.Resolve<RootDialog>();
@@ -67,9 +68,19 @@ namespace SharePointBot.UnitTests.Conversations
 
                     await SendMessageNoResponse("logout");
 
+                    // Last site collection stored in bot state, so prompt that user can re-use that one.
                     await SendTextAndAssertResponse(
                         "login",
                         Constants.Responses.LogIntoWhichSiteCollection + string.Format(Constants.Responses.LastSiteCollection, SiteCollectionUrl));
+
+                    // Start new conversation with new user.
+                    _conversationId = Guid.NewGuid();
+                    _user = Guid.NewGuid().ToString();
+
+                    // New user so last site collection won't be stored in bot state and bot won't prompt for prior site collection.
+                    await SendTextAndAssertResponse(
+                       "login",
+                       Constants.Responses.LogIntoWhichSiteCollection);
                 }
             }
 
