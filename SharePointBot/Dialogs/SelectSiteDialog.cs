@@ -176,12 +176,20 @@ namespace SharePointBot.Dialogs
             {
                 // Note that for this to work, the entity being selected (BotSite) should override ToString() and return something identifiable
                 // for each site. That seems to be used to determine which option has been selected.
+                var descriptions = new List<string>();
+                int index = 1;
+                foreach (var site in sites)
+                {
+                    descriptions.Add($"{index++}: {site.ToString()}");
+                }
+
                 var choose = new PromptDialog.PromptChoice<BotSite>(
                    sites,
                    Constants.Responses.ChooseSite,
                    Constants.Responses.DidntUnderstand + Constants.Responses.PleaseChooseAnOption,
                    Constants.Misc.DialogAttempts,
-                   promptStyle: PromptStyle.Auto
+                   promptStyle: PromptStyle.Auto,
+                   descriptions: descriptions
                 );
 
 

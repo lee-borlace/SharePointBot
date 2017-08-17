@@ -144,7 +144,7 @@ namespace BotAuth.Dialogs
 
             if (msg.ChannelId == "skypeforbusiness")
             {
-                return context.PostAsync($@"<a href=""{authenticationUrl}"">Authentication Required</a>");
+                return context.PostAsync($@"<a href=""{authenticationUrl}"">Please click here to authenticate.</a>");
             }
             else if (msg.ChannelId == "msteams")
                 plCard = new SigninCard(this.prompt, GetCardActions(authenticationUrl, "openUrl"));
