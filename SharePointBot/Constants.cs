@@ -63,6 +63,9 @@ namespace SharePointBot
             public static string ChooseSite = "I found more than one matching site. Which one do you want to select?";
             public static string DidntUnderstand = "Hmm I'm sorry, I didn't quite understand that.";
             public static string PleaseChooseAnOption = " Please choose one of the options below.";
+            public static string DontUnderstand = "Sorry I don't know anything about that.";
+            public static string HowCanIHelp = "How can I help you work with SharePoint Online?";
+            public static string Greeting = "Hi!" + " " + HowCanIHelp;
         }
 
         public static class StateKeys
@@ -112,6 +115,9 @@ namespace SharePointBot
             public const string TableNameActivityLogging = "SharePointBotActivityLogging";
         }
 
-
+        public static class LuisEntityNames
+        {
+            public const string SiteTitleOrAlias = "SiteTitleOrAlias";
+        }
     }
 }

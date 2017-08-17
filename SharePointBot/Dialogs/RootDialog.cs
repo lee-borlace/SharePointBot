@@ -17,11 +17,15 @@ using SharePointBot.Model;
 using SharePointBot.Services.Interfaces;
 using System.Web.Http;
 using Microsoft.Bot.Builder.Dialogs.Internals;
+using Microsoft.Bot.Builder.Luis;
+using Microsoft.Bot.Builder.Luis.Models;
+using System.Linq;
 
 namespace SharePointBot.Dialogs
 {
+    [LuisModel("7716c1d3-40ea-4f10-8397-956c37074e70", "41f72c548e2a42a1b5d900c9ccf2d4fe")]
     [Serializable]
-    public class RootDialog : IDialog<object>
+    public class RootDialog : LuisDialog<object>
     {
         private LogInDialog _loginDialog;
         private SelectSiteDialog _selectSiteDialog;
@@ -41,76 +45,59 @@ namespace SharePointBot.Dialogs
         }
 
 
-        public Task StartAsync(IDialogContext context)
+        [LuisIntent("")]
+        public async Task None(IDialogContext context, LuisResult result)
         {
-            context.Wait(MessageReceivedAsync);
-
-            return Task.CompletedTask;
-        }
-
-        private async Task MessageReceivedAsync(IDialogContext context, IAwaitable<object> result)
-        {
-            var message = await result;
-            var activity = await result as Activity;
-
-            var userToBot = activity.Text.ToLowerInvariant();
-
-            var foundMatch = false;
-
-            // Log in.
-            var match = Regex.Match(userToBot, Constants.UtteranceRegexes.Login);
-            if (match.Success)
-            {
-                foundMatch = true;
-                context.Call(_loginDialog, LoginCallBack);
-            }
-
-            // Log out.
-            match = Regex.Match(userToBot, Constants.UtteranceRegexes.LogOut);
-            if (match.Success)
-            {
-                foundMatch = true;
-                await _authenticationService.LogOut(context);
-            }
-
-            // Select site.
-            match = Regex.Match(userToBot, Constants.UtteranceRegexes.SelectSite);
-            if (match.Success)
-            {
-                foundMatch = true;
-
-                var siteTitleOrAlias = match.Groups[Constants.RegexGroupNames.SiteTitleOrAlias].Value;
-
-                _selectSiteDialog.SiteTitleOrAlias = siteTitleOrAlias;
-
-                context.Call(_selectSiteDialog, ReturnFromDialog);
-            }
-
-            // What is current site.
-            match = Regex.Match(userToBot, Constants.UtteranceRegexes.WhatIsCurrentSite);
-            if (match.Success)
-            {
-                foundMatch = true;
-                context.Call(_getSiteDialog, ReturnFromDialog);
-            }
-
-            if (!foundMatch)
-            {
-                context.Wait(MessageReceivedAsync);
-            }
-
-        }
-
-        private async Task ReturnFromDialog(IDialogContext context, IAwaitable<BotSite> result)
-        {
-            var dialogResult = await result;
-            context.Wait(MessageReceivedAsync);
+            await context.PostAsync(Constants.Responses.DontUnderstand);
+            context.Wait(MessageReceived);
         }
 
 
-        private async Task LoginCallBack(IDialogContext context, IAwaitable<AuthResult> authResult)
+        [LuisIntent("Greeting")]
+        public async Task Greeting(IDialogContext context, LuisResult result)
         {
-            context.Wait(MessageReceivedAsync);
+            await context.PostAsync(Constants.Responses.HowCanIHelp);
+            context.Wait(MessageReceived);
+        }
+
+        [LuisIntent("LogIn")]
+        public async Task LogIn(IDialogContext context, LuisResult result)
+        {
+            context.Call(_loginDialog, Callback);
+        }
+
+        [LuisIntent("LogOut")]
+        public async Task LogOut(IDialogContext context, LuisResult result)
+        {
+            await _authenticationService.LogOut(context);
+            context.Wait(MessageReceived);
+        }
+
+        [LuisIntent("GetCurrentSite")]
+        public async Task GetCurrentSite(IDialogContext context, LuisResult result)
+        {
+            context.Call(_getSiteDialog, Callback);
+        }
+
+        [LuisIntent("SelectSite")]
+        public async Task SelectSite(IDialogContext context, LuisResult result)
+        {
+            string siteTitleOrAlias = null;
+
+            foreach (var entity in result.Entities.Where(Entity => Entity.Type == Constants.LuisEntityNames.SiteTitleOrAlias))
+            {
+                siteTitleOrAlias = entity.Entity;
+            }
+
+            _selectSiteDialog.SiteTitleOrAlias = siteTitleOrAlias;
+
+            context.Call(_selectSiteDialog, Callback);
+        }
+
+
+        private async Task Callback(IDialogContext context, IAwaitable<object> result)
+        {
+            context.Wait(MessageReceived);
         }
     }
 }
