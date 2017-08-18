@@ -27,18 +27,20 @@ namespace SharePointBot
         {
             GlobalConfiguration.Configure(WebApiConfig.Register);
 
-            RegisterWebApiDependencies();
-            RegisterBotDependencies();
+            var builder = new ContainerBuilder();
+            RegisterDependencies(builder);
+            builder.RegisterApiControllers(Assembly.GetExecutingAssembly());
+            var config = GlobalConfiguration.Configuration;
+            var container = builder.Build();
+            config.DependencyResolver = new AutofacWebApiDependencyResolver(container);
+
+            // We have to individually update the bot-level dependencies because the BotAuth functionality depends on it.
+            Conversation.UpdateContainer(RegisterDependencies);
         }
 
 
-        /// <summary>
-        /// Register global dependencies for Web API.
-        /// </summary>
-        private static void RegisterWebApiDependencies()
+        protected void RegisterDependencies(ContainerBuilder builder)
         {
-            var builder = new ContainerBuilder();
-
             builder.RegisterModule(new DialogModule());
 
             builder.RegisterModule(new SharePointBotModule(
@@ -63,37 +65,6 @@ namespace SharePointBot
 
 #if DEBUG
 #else
-#endif
-
-            builder.RegisterApiControllers(Assembly.GetExecutingAssembly());
-            var config = GlobalConfiguration.Configuration;
-            var container = builder.Build();
-            config.DependencyResolver = new AutofacWebApiDependencyResolver(container);
-        }
-
-
-
-        /// <summary>
-        /// Register specific dependencies for bot.
-        /// </summary>
-        private void RegisterBotDependencies()
-        {
-            Conversation.UpdateContainer(builder =>
-            {
-                builder.RegisterModule(new SharePointBotModule(
-                    ConfigurationManager.AppSettings["LuisModelId"],
-                    ConfigurationManager.AppSettings["LuisSubscriptionKey"]));
-
-                builder.RegisterModule(new QnAMakerModule(
-                    ConfigurationManager.AppSettings["QnASubscriptionKey"],
-                    ConfigurationManager.AppSettings["QnAKbId"],
-                    Constants.QnA.DefaultMessage,
-                    Constants.QnA.Threshold,
-                    Constants.QnA.top));
-
-
-#if DEBUG
-#else
                 // TODO : See issue #1 - this causes issues when commented in. Need to work out how to use Azure Storage.
                 //builder.RegisterModule(new AzureModule(Assembly.GetExecutingAssembly()));
 
@@ -104,7 +75,7 @@ namespace SharePointBot
                 //    .AsSelf()
                 //    .SingleInstance();
 #endif
-            });
+
         }
     }
 }

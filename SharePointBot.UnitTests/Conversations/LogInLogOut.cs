@@ -17,6 +17,7 @@ using Microsoft.Bot.Builder.Internals.Fibers;
 using SharePointBot.UnitTests.Mocks;
 using SharePointBot.UnitTests.Dialogs;
 using Microsoft.Bot.Builder.Luis;
+using Microsoft.Bot.Builder.CognitiveServices.QnAMaker;
 
 namespace SharePointBot.UnitTests.Conversations
 {
@@ -39,12 +40,14 @@ namespace SharePointBot.UnitTests.Conversations
             SetupLuis<RootDialog>(luisMock, "login", d => d.LogIn(null, null), 1.0);
             SetupLuis<RootDialog>(luisMock, "logout", d => d.LogOut(null, null), 1.0);
 
-            using (new FiberTestBase.ResolveMoqAssembly(luisMock.Object, authService, spBotStateServiceMock.Object, spServiceMock.Object))
+            var qnaMock = new Mock<IQnAService>();
+
+            using (new FiberTestBase.ResolveMoqAssembly(luisMock.Object, qnaMock.Object, authService, spBotStateServiceMock.Object, spServiceMock.Object))
             {
                 // Create the container which will be used when testing this conversation.
-                using (_container = Build(Options.ResolveDialogFromContainer, luisMock.Object, authService, spBotStateServiceMock.Object, spServiceMock.Object))
+                using (_container = Build(Options.ResolveDialogFromContainer, luisMock.Object, qnaMock.Object, authService, spBotStateServiceMock.Object, spServiceMock.Object))
                 {
-                    RegisterDependencies(_container, authService, spBotStateServiceMock, spServiceMock, luisMock);
+                    RegisterDependencies(_container, authService, spBotStateServiceMock, spServiceMock, luisMock, qnaMock);
 
                     // Start new conversation with new user.
                     _conversationId = Guid.NewGuid();
@@ -111,12 +114,14 @@ namespace SharePointBot.UnitTests.Conversations
             SetupLuis<RootDialog>(luisMock, "login", d => d.LogIn(null, null), 1.0);
             SetupLuis<RootDialog>(luisMock, "logout", d => d.LogOut(null, null), 1.0);
 
-            using (new FiberTestBase.ResolveMoqAssembly(luisMock.Object, authService, spBotStateServiceMock.Object, spServiceMock.Object))
+            var qnaMock = new Mock<IQnAService>();
+
+            using (new FiberTestBase.ResolveMoqAssembly(luisMock.Object, qnaMock.Object, authService, spBotStateServiceMock.Object, spServiceMock.Object))
             {
                 // Create the container which will be used when testing this conversation.
-                using (_container = Build(Options.ResolveDialogFromContainer, luisMock.Object, authService, spBotStateServiceMock.Object, spServiceMock.Object))
+                using (_container = Build(Options.ResolveDialogFromContainer, luisMock.Object, qnaMock.Object, authService, spBotStateServiceMock.Object, spServiceMock.Object))
                 {
-                    RegisterDependencies(_container, authService, spBotStateServiceMock, spServiceMock, luisMock);
+                    RegisterDependencies(_container, authService, spBotStateServiceMock, spServiceMock, luisMock, qnaMock);
 
                     // Start new conversation with new user.
                     _conversationId = Guid.NewGuid();
@@ -175,7 +180,8 @@ namespace SharePointBot.UnitTests.Conversations
             IAuthenticationService authService,
             Mock<ISharePointBotStateService> spBotStateService,
             Mock<ISharePointService> spService,
-            Mock<ILuisService> luisMock
+            Mock<ILuisService> luisMock,
+            Mock<IQnAService> qnaMock
             )
         {
             var builder = new ContainerBuilder();
@@ -184,6 +190,10 @@ namespace SharePointBot.UnitTests.Conversations
 
             builder.Register(c => new LuisModelAttribute("7716c1d3-40ea-4f10-8397-956c37074e70", "41f72c548e2a42a1b5d900c9ccf2d4fe")).AsSelf().AsImplementedInterfaces().SingleInstance();
             builder.Register(c => luisMock.Object).Keyed<ILuisService>(FiberModule.Key_DoNotSerialize).As<ILuisService>().SingleInstance();
+
+            builder.Register(c => new QnAMakerAttribute("cde2d9668fec4613bb78a9b89529b7fb", "60c45881-56c4-4685-8eae-fa8e300c94c1")).AsSelf().AsImplementedInterfaces().SingleInstance();
+            builder.Register(c => qnaMock.Object).Keyed<IQnAService>(FiberModule.Key_DoNotSerialize).As<IQnAService>().SingleInstance();
+
 
             builder.Register(c => spBotStateService.Object)
                 .Keyed<ISharePointBotStateService>(FiberModule.Key_DoNotSerialize)
