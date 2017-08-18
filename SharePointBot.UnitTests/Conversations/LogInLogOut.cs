@@ -36,7 +36,7 @@ namespace SharePointBot.UnitTests.Conversations
             var spServiceMock = new Mock<ISharePointService>();
 
             var luisMock = new Mock<ILuisService>(MockBehavior.Strict);
-            SetupLuis<RootDialog>(luisMock, "loginx", d => d.LogIn(null, null), 1.0);
+            SetupLuis<RootDialog>(luisMock, "login", d => d.LogIn(null, null), 1.0);
             SetupLuis<RootDialog>(luisMock, "logout", d => d.LogOut(null, null), 1.0);
 
             using (new FiberTestBase.ResolveMoqAssembly(luisMock.Object, authService, spBotStateServiceMock.Object, spServiceMock.Object))
