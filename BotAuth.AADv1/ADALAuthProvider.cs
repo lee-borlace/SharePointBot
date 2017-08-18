@@ -74,7 +74,15 @@ namespace BotAuth.AADv1
             context.UserData.RemoveValue($"{this.Name}{ContextConstants.MagicNumberKey}");
             context.UserData.RemoveValue($"{this.Name}{ContextConstants.MagicNumberValidated}");
             string signoutURl = "https://login.microsoftonline.com/common/oauth2/logout?post_logout_redirect_uri=" + System.Net.WebUtility.UrlEncode(authOptions.RedirectUrl);
-            await context.PostAsync($"In order to finish the sign out, please click at this [link]({signoutURl}).");
+
+            if (context.Activity.ChannelId == "skypeforbusiness")
+            {
+                await context.PostAsync($@"In order to finish the sign out, please click <a href=""{signoutURl}"">here</a>.");
+            }
+            else
+            {
+                await context.PostAsync($"In order to finish the sign out, please click [here]({signoutURl}).");
+            }
         }
     }
 }
