@@ -36,7 +36,7 @@ namespace SharePointBot.UnitTests.Conversations
             var spServiceMock = new Mock<ISharePointService>();
 
             var luisMock = new Mock<ILuisService>(MockBehavior.Strict);
-            SetupLuis<RootDialog>(luisMock, "login", d => d.LogIn(null, null), 1.0);
+            SetupLuis<RootDialog>(luisMock, "loginx", d => d.LogIn(null, null), 1.0);
             SetupLuis<RootDialog>(luisMock, "logout", d => d.LogOut(null, null), 1.0);
 
             using (new FiberTestBase.ResolveMoqAssembly(luisMock.Object, authService, spBotStateServiceMock.Object, spServiceMock.Object))
@@ -167,72 +167,6 @@ namespace SharePointBot.UnitTests.Conversations
             luisMock.VerifyAll();
 
         }
-
-
-        ///// <summary>
-        ///// Log in / out - Skype.
-        ///// </summary>
-        ///// <returns></returns>
-        //[TestMethod]
-        //public async Task Conversation_LoginLogoutSequence_SimulateSkype()
-        //{
-        //    var authService = new AuthenticationServiceMock(true);
-        //    var spBotStateServiceMock = new Mock<ISharePointBotStateService>();
-        //    var spServiceMock = new Mock<ISharePointService>();
-
-        //    using (new FiberTestBase.ResolveMoqAssembly(authService, spBotStateServiceMock.Object, spServiceMock.Object))
-        //    {
-        //        // Create the container which will be used when testing this conversation.
-        //        using (_container = Build(Options.ResolveDialogFromContainer, authService, spBotStateServiceMock.Object, spServiceMock.Object))
-        //        {
-        //            RegisterDependencies(_container, authService, spBotStateServiceMock, spServiceMock);
-
-        //            // Start new conversation with new user.
-        //            _conversationId = Guid.NewGuid();
-        //            _user = Guid.NewGuid().ToString();
-
-        //            // Ensure root dialog is captured.
-        //            _makeRoot = () => _container.Resolve<RootDialog>();
-
-        //            await SendTextAndAssertResponse(
-        //                "login",
-        //                Constants.Responses.LogIntoWhichSiteCollection);
-
-        //            // "Last" isn't a valid response at this point.
-        //            await SendTextAndAssertResponse(
-        //                "last",
-        //                Constants.Responses.InvalidSiteCollectionUrl);
-
-        //            await SendTextAndAssertResponse(
-        //                "login",
-        //               Constants.Responses.LogIntoWhichSiteCollection);
-
-        //            const string SiteCollectionUrl = @"https://mytenant.sharepoint.com/sites/mysitecollection";
-        //            string SiteCollectionUrlSkypeified = $@"<a href=""{SiteCollectionUrl}"">{SiteCollectionUrl}</a>";
-
-        //            await SendTextAndAssertResponse(
-        //                SiteCollectionUrlSkypeified,
-        //                Constants.Responses.LoggedIn);
-
-        //            await SendMessageNoResponse("logout");
-
-        //            // Last site collection stored in bot state, so prompt that user can re-use that one.
-        //            await SendTextAndAssertResponse(
-        //                "login",
-        //                Constants.Responses.LogIntoWhichSiteCollection + string.Format(Constants.Responses.LastSiteCollection, SiteCollectionUrl));
-
-        //            // Start new conversation with new user.
-        //            _conversationId = Guid.NewGuid();
-        //            _user = Guid.NewGuid().ToString();
-
-        //            // New user so last site collection won't be stored in bot state and bot won't prompt for prior site collection.
-        //            await SendTextAndAssertResponse(
-        //               "login",
-        //               Constants.Responses.LogIntoWhichSiteCollection);
-        //        }
-        //    }
-
-        //}
 
 
 
