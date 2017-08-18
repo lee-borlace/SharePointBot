@@ -9,9 +9,6 @@
       "name": "GetCurrentSite"
     },
     {
-      "name": "Greeting"
-    },
-    {
       "name": "LogIn"
     },
     {
@@ -37,23 +34,8 @@
   "regex_features": [],
   "utterances": [
     {
-      "text": "hello",
-      "intent": "Greeting",
-      "entities": []
-    },
-    {
-      "text": "hi",
-      "intent": "Greeting",
-      "entities": []
-    },
-    {
       "text": "login",
       "intent": "LogIn",
-      "entities": []
-    },
-    {
-      "text": "good day",
-      "intent": "Greeting",
       "entities": []
     },
     {
@@ -77,28 +59,8 @@
       "entities": []
     },
     {
-      "text": "sup",
-      "intent": "Greeting",
-      "entities": []
-    },
-    {
       "text": "log in",
       "intent": "LogIn",
-      "entities": []
-    },
-    {
-      "text": "how's it going",
-      "intent": "Greeting",
-      "entities": []
-    },
-    {
-      "text": "gday",
-      "intent": "Greeting",
-      "entities": []
-    },
-    {
-      "text": "g'day",
-      "intent": "Greeting",
       "entities": []
     },
     {
@@ -114,11 +76,6 @@
     {
       "text": "signout",
       "intent": "LogOut",
-      "entities": []
-    },
-    {
-      "text": "gidday",
-      "intent": "Greeting",
       "entities": []
     },
     {

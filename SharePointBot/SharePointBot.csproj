@@ -260,6 +260,7 @@
     </Content>
     <Content Include="LUIS\SharePoint Bot.json" />
     <None Include="Properties\PublishProfiles\SharePointBot2017 - Web Deploy.pubxml" />
+    <Content Include="QnA\Diff-file-60c45881-56c4-4685-8eae-fa8e300c94c1-04295218082017.tsv" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
