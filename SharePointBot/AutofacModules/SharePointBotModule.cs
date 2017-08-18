@@ -6,6 +6,7 @@ using Microsoft.Bot.Builder.Luis;
 using SharePointBot.Dialogs;
 using SharePointBot.Services;
 using SharePointBot.Services.Interfaces;
+using System.Configuration;
 
 namespace SharePointBot.AutofacModules
 {
@@ -18,7 +19,10 @@ namespace SharePointBot.AutofacModules
         {
             base.Load(builder);
 
-            builder.Register(c => new LuisModelAttribute("7716c1d3-40ea-4f10-8397-956c37074e70", "41f72c548e2a42a1b5d900c9ccf2d4fe")).AsSelf().AsImplementedInterfaces().SingleInstance();
+            builder.Register(c => new LuisModelAttribute(
+                ConfigurationManager.AppSettings["LuisModelId"], 
+                ConfigurationManager.AppSettings["LuisSubscriptionKey"])).AsSelf().AsImplementedInterfaces().SingleInstance();
+
             builder.RegisterType<LuisService>().Keyed<ILuisService>(FiberModule.Key_DoNotSerialize).AsImplementedInterfaces().SingleInstance();
 
             builder.RegisterType<RootDialog>().As<IDialog<object>>().InstancePerDependency();

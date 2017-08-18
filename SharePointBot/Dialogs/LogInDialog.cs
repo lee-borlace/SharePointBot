@@ -52,6 +52,7 @@ namespace SharePointBot.Dialogs
         private async Task AfterGetSiteCollectionUrl(IDialogContext context, IAwaitable<string> result)
         {
             var userResponse = await result;
+            userResponse = userResponse.Trim();
 
             // Account for Skype or other channels putting any specified URL inside an anchor tag.
             userResponse = UrlUtility.ExtractHrefFromAnchorTag(userResponse);
