@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using Autofac.Integration.WebApi;
 using Microsoft.Bot.Builder.Azure;
+using Microsoft.Bot.Builder.CognitiveServices.QnAMaker;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Dialogs.Internals;
 using Microsoft.Bot.Builder.History;
@@ -39,7 +40,18 @@ namespace SharePointBot
             var builder = new ContainerBuilder();
 
             builder.RegisterModule(new DialogModule());
-            builder.RegisterModule(new SharePointBotModule());
+
+            builder.RegisterModule(new SharePointBotModule(
+                ConfigurationManager.AppSettings["LuisModelId"],
+                ConfigurationManager.AppSettings["LuisSubscriptionKey"]));
+
+
+            builder.RegisterModule(new QnAMakerModule(
+                   ConfigurationManager.AppSettings["QnASubscriptionKey"],
+                   ConfigurationManager.AppSettings["QnAKbId"],
+                   Constants.QnA.DefaultMessage,
+                   Constants.QnA.Threshold,
+                   Constants.QnA.top));
 
             // If specified in config, register trace logger for activitities. This will log all activities to whichever trace listeners are set up.
             bool traceAllActivities = false;
@@ -68,7 +80,17 @@ namespace SharePointBot
         {
             Conversation.UpdateContainer(builder =>
             {
-                builder.RegisterModule(new SharePointBotModule());
+                builder.RegisterModule(new SharePointBotModule(
+                    ConfigurationManager.AppSettings["LuisModelId"],
+                    ConfigurationManager.AppSettings["LuisSubscriptionKey"]));
+
+                builder.RegisterModule(new QnAMakerModule(
+                    ConfigurationManager.AppSettings["QnASubscriptionKey"],
+                    ConfigurationManager.AppSettings["QnAKbId"],
+                    Constants.QnA.DefaultMessage,
+                    Constants.QnA.Threshold,
+                    Constants.QnA.top));
+
 
 #if DEBUG
 #else

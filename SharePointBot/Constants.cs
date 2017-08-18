@@ -119,5 +119,12 @@ namespace SharePointBot
         {
             public const string SiteTitleOrAlias = "SiteTitleOrAlias";
         }
+
+        public static class QnA
+        {
+            public const string DefaultMessage = "Sorry I don't understand.";
+            public const double Threshold = 0.5;
+            public const int top = 1;
+        }
     }
 }

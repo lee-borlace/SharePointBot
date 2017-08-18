@@ -15,13 +15,22 @@ namespace SharePointBot.AutofacModules
     /// </summary>
     public class SharePointBotModule : Module
     {
+        private string _luisModelId;
+        private string _luisSubscriptionKey;
+
+        public SharePointBotModule(string luisModelId, string luisSubscriptionKey)
+        {
+            _luisModelId = luisModelId;
+            _luisSubscriptionKey = luisSubscriptionKey;
+        }
+
         protected override void Load(ContainerBuilder builder)
         {
             base.Load(builder);
 
             builder.Register(c => new LuisModelAttribute(
-                ConfigurationManager.AppSettings["LuisModelId"], 
-                ConfigurationManager.AppSettings["LuisSubscriptionKey"])).AsSelf().AsImplementedInterfaces().SingleInstance();
+                _luisModelId,
+                _luisSubscriptionKey)).AsSelf().AsImplementedInterfaces().SingleInstance();
 
             builder.RegisterType<LuisService>().Keyed<ILuisService>(FiberModule.Key_DoNotSerialize).AsImplementedInterfaces().SingleInstance();
 

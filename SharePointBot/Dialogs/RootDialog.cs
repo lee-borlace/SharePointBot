@@ -19,6 +19,7 @@ using Microsoft.Bot.Builder.Dialogs.Internals;
 using Microsoft.Bot.Builder.Luis;
 using Microsoft.Bot.Builder.Luis.Models;
 using System.Linq;
+using Microsoft.Bot.Builder.CognitiveServices.QnAMaker;
 
 namespace SharePointBot.Dialogs
 {
@@ -29,18 +30,21 @@ namespace SharePointBot.Dialogs
         private SelectSiteDialog _selectSiteDialog;
         private GetSiteDialog _getSiteDialog;
         private IAuthenticationService _authenticationService;
+        private IQnAService _qnaService;
 
         public RootDialog(
             LogInDialog loginDialog, 
             SelectSiteDialog selectSiteDialog, 
             GetSiteDialog getSiteDialog,
             IAuthenticationService authenticationService,
-            ILuisService luis) : base(luis)
+            ILuisService luis,
+            IQnAService qnaService) : base(luis)
         {
             _loginDialog = loginDialog;
             _selectSiteDialog = selectSiteDialog;
             _getSiteDialog = getSiteDialog;
             _authenticationService = authenticationService;
+            _qnaService = qnaService;
         }
 
 
