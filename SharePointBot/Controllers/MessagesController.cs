@@ -29,6 +29,12 @@ namespace SharePointBot
         {
             if (activity.Type == ActivityTypes.Message)
             {
+                // TODO - make this a little bit more robust.
+                if (activity.ChannelId == "skypeforbusiness")
+                {
+                    activity.From.Id = activity.From.Id.Replace("sip:", "");
+                }
+
                 using (var scope = DialogModule.BeginLifetimeScope(this.scope, activity))
                 {
                     var postToBot = scope.Resolve<IPostToBot>();
