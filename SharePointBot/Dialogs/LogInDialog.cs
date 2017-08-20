@@ -62,7 +62,7 @@ namespace SharePointBot.Dialogs
             string siteCollectionUrl = string.Empty;
 
             // User typed "last"
-            if (Regex.IsMatch(userResponse, Constants.UtteranceRegexes.LastSiteCollectionUrl))
+            if (Regex.IsMatch(userResponse, Constants.UtteranceRegexes.LastSiteCollectionUrl, RegexOptions.IgnoreCase))
             {
                 string prompt = Constants.Responses.LogIntoWhichSiteCollection;
                 string lastSiteCollectionUrl = null;
