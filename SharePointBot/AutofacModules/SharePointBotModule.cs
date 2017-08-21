@@ -62,6 +62,11 @@ namespace SharePointBot.AutofacModules
                .RegisterType<SelectSiteDialog>()
                .AsSelf()
                .InstancePerDependency();
+
+            builder
+              .RegisterType<HelpDialog>()
+              .AsSelf()
+              .InstancePerDependency();
         }
     }
 }

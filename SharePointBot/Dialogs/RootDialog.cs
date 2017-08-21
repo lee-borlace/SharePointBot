@@ -29,6 +29,7 @@ namespace SharePointBot.Dialogs
         private LogInDialog _loginDialog;
         private SelectSiteDialog _selectSiteDialog;
         private GetSiteDialog _getSiteDialog;
+        private HelpDialog _helpDialog;
         private IAuthenticationService _authenticationService;
         private IQnAService _qnaService;
 
@@ -36,6 +37,7 @@ namespace SharePointBot.Dialogs
             LogInDialog loginDialog, 
             SelectSiteDialog selectSiteDialog, 
             GetSiteDialog getSiteDialog,
+            HelpDialog helpDialog,
             IAuthenticationService authenticationService,
             ILuisService luis,
             IQnAService qnaService) : base(luis)
@@ -43,6 +45,7 @@ namespace SharePointBot.Dialogs
             _loginDialog = loginDialog;
             _selectSiteDialog = selectSiteDialog;
             _getSiteDialog = getSiteDialog;
+            _helpDialog = helpDialog;
             _authenticationService = authenticationService;
             _qnaService = qnaService;
         }
@@ -52,7 +55,7 @@ namespace SharePointBot.Dialogs
         public async Task None(IDialogContext context, LuisResult result)
         {
             await context.PostAsync(Constants.Responses.DontUnderstand);
-            context.Wait(MessageReceived);
+            context.Call(_helpDialog, Callback);
         }
 
         [LuisIntent("LogIn")]
@@ -89,7 +92,27 @@ namespace SharePointBot.Dialogs
             context.Call(_selectSiteDialog, Callback);
         }
 
+        [LuisIntent("Help")]
+        public async Task Help(IDialogContext context, LuisResult result)
+        {
+            context.Call(_helpDialog, Callback);
+        }
 
+        [LuisIntent("Greeting")]
+        public async Task Greeting(IDialogContext context, LuisResult result)
+        {
+            await context.PostAsync(Constants.Responses.Greeting);
+            context.Call(_helpDialog, Callback);
+        }
+       
+
+
+        /// <summary>
+        /// Generic callback to handle the return from other dialogs.
+        /// </summary>
+        /// <param name="context">The context.</param>
+        /// <param name="result">The result.</param>
+        /// <returns></returns>
         private async Task Callback(IDialogContext context, IAwaitable<object> result)
         {
             context.Wait(MessageReceived);

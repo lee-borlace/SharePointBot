@@ -20,6 +20,7 @@ namespace SharePointBot.Dialogs
     [Serializable]
     public class SelectSiteDialog : IDialog<BotSite>
     {
+        [NonSerialized]
         /// <summary>
         /// Title or alias of site to select.
         /// </summary>

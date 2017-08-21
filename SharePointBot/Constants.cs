@@ -48,6 +48,11 @@ namespace SharePointBot
 
         public static class Choices
         {
+            public const string SelectSite = "Select a site";
+            public const string GetCurrentSite = "Find out which site I'm on";
+            public const string SelectList = "Select a list";
+            public const string LogIn = "Log into SharePoint";
+            public const string LogOut = "Log out of SharePoint";
         }
 
         public static class Responses
@@ -65,7 +70,9 @@ namespace SharePointBot
             public static string PleaseChooseAnOption = " Please choose one of the options below.";
             public static string DontUnderstand = "Sorry I don't know anything about that.";
             public static string HowCanIHelp = "How can I help you work with SharePoint Online?";
-            public static string Greeting = "Hi!" + " " + HowCanIHelp;
+            public static string Greeting = "Hi there!";
+            public static string ICanHelpWith = "Here are some things I can help you with.";
+            public static string NotImplemented = "Sorry, I haven't been taught how to do that yet, please check in again sometime soon!";
         }
 
         public static class StateKeys

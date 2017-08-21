@@ -56,15 +56,17 @@ namespace SharePointBot.Services
                     {
                         foreach (var row in results.Value[0].ResultRows)
                         {
-                            retVal.Add(new BotSite
+                            // TODO : find a more robust way to get URL. If can't find it, then don't include this search result.
+                            if (row["SPWebUrl"] != null && !string.IsNullOrEmpty(row["SPWebUrl"].ToString()))
                             {
-                                Alias = string.Empty,
-                                Id = Guid.Empty,
-                                Title = row["Title"].ToString(),
-
-                                // TODO : find a more robust way to get URL. If can't find it, then don't include this option.
-                                Url = row["SPWebUrl"]?.ToString()
-                            });
+                                retVal.Add(new BotSite
+                                {
+                                    Alias = string.Empty,
+                                    Id = Guid.Empty,
+                                    Title = row["Title"].ToString(),
+                                    Url = row["SPWebUrl"].ToString()
+                                });
+                            }
                         }
                     }
                 }

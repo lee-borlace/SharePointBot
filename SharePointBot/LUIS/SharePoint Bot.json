@@ -9,6 +9,12 @@
       "name": "GetCurrentSite"
     },
     {
+      "name": "Greeting"
+    },
+    {
+      "name": "Help"
+    },
+    {
       "name": "LogIn"
     },
     {
@@ -34,8 +40,33 @@
   "regex_features": [],
   "utterances": [
     {
+      "text": "hello",
+      "intent": "Greeting",
+      "entities": []
+    },
+    {
+      "text": "hi",
+      "intent": "Greeting",
+      "entities": []
+    },
+    {
       "text": "login",
       "intent": "LogIn",
+      "entities": []
+    },
+    {
+      "text": "how are you",
+      "intent": "Greeting",
+      "entities": []
+    },
+    {
+      "text": "what can i do",
+      "intent": "Help",
+      "entities": []
+    },
+    {
+      "text": "help",
+      "intent": "Help",
       "entities": []
     },
     {
@@ -44,8 +75,18 @@
       "entities": []
     },
     {
+      "text": "help me",
+      "intent": "Help",
+      "entities": []
+    },
+    {
       "text": "log out",
       "intent": "LogOut",
+      "entities": []
+    },
+    {
+      "text": "what can you do for me",
+      "intent": "Help",
       "entities": []
     },
     {
@@ -59,8 +100,33 @@
       "entities": []
     },
     {
+      "text": "sup",
+      "intent": "Greeting",
+      "entities": []
+    },
+    {
       "text": "log in",
       "intent": "LogIn",
+      "entities": []
+    },
+    {
+      "text": "how's it going",
+      "intent": "Greeting",
+      "entities": []
+    },
+    {
+      "text": "what can you help me with",
+      "intent": "Help",
+      "entities": []
+    },
+    {
+      "text": "tell me what you can do",
+      "intent": "Help",
+      "entities": []
+    },
+    {
+      "text": "gday",
+      "intent": "Greeting",
       "entities": []
     },
     {
@@ -76,6 +142,11 @@
     {
       "text": "signout",
       "intent": "LogOut",
+      "entities": []
+    },
+    {
+      "text": "how's things",
+      "intent": "Greeting",
       "entities": []
     },
     {
