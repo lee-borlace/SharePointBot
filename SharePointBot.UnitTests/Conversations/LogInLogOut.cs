@@ -222,6 +222,11 @@ namespace SharePointBot.UnitTests.Conversations
                .AsSelf()
                .InstancePerDependency();
 
+            builder
+              .RegisterType<HelpDialog>()
+              .AsSelf()
+              .InstancePerDependency();
+
 
             builder.Update(container);
         }
